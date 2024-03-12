@@ -2,6 +2,45 @@
 #include <vector/vector.h>
 #include <math.h>
 
+double _physics_body_masses[] =
+    {
+        PHYSICS_SUN_MASS,
+        PHYSICS_SUN_MASS + PHYSICS_MERCURY_MASS + PHYSICS_VENUS_MASS + PHYSICS_EARTH_MASS + PHYSICS_MOON_MASS + PHYSICS_MARS_MASS,
+        PHYSICS_MERCURY_MASS,
+        PHYSICS_VENUS_MASS,
+        PHYSICS_EARTH_MASS,
+        PHYSICS_MOON_MASS,
+        PHYSICS_EARTH_MASS + PHYSICS_MOON_MASS,
+        PHYSICS_MARS_MASS
+    };
+
+const char* _physics_body_names[] =
+    {
+        "sun",
+        "sun_barycenter",
+        "mercury",
+        "venus",
+        "earth",
+        "moon",
+        "earth_moon_barycenter",
+        "mars"
+    };
+
+const char* physics_body_name(physics_body_id_t id)
+{
+    return _physics_body_names[id];
+}
+
+double physics_moon_angular_speed()
+{
+    return 2.0 * physics_pi() / (physics_seconds_per_siderial_day() * 27.322);
+}
+
+double physics_body_mass(physics_body_id_t id)
+{
+    return _physics_body_masses[id];
+}
+
 double physics_pi()
 {
     return acos(-1.0);
