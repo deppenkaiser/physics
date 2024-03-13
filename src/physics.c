@@ -61,6 +61,12 @@ double physics_barycenter(double distance_m, double mass_center_kg, double mass_
     return distance_m * mass_satellite_kg / (mass_center_kg + mass_satellite_kg);
 }
 
+double physics_newton_angular_speed(vector_3d_t r_AU, double mass_kg)
+{
+    double R = vector_norm(r_AU) * PHYSICS_AU;
+    return sqrt(mass_kg * PHYSICS_G / pow(R, 3.0));
+}
+
 struct vector_3d physics_weber_gravitation_force(double m1_kg, double m2_kg, vector_3d_t r, vector_3d_t v, vector_3d_t a)
 {
     struct vector_3d F = {0};
@@ -76,3 +82,4 @@ struct vector_3d physics_linear_motion(vector_3d_t v, double t_s)
 {
     return vector_multiply_scalar(v, t_s);
 }
+
