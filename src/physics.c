@@ -135,6 +135,11 @@ double physics_body_eccentricity(physics_body_id_t id)
     return _physics_body_eccentricity[id];
 }
 
+double physics_body_angle_rad(double t_s, double epoche_rad, double p_AU)
+{
+    return sqrt(PHYSICS_G * _physics_body_masses_kg[SUN_BARYCENTER] / pow(p_AU * PHYSICS_AU, 3.0)) * t_s + epoche_rad;
+}
+
 double physics_pi()
 {
     return acos(-1.0);

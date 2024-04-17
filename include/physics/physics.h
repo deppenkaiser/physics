@@ -31,6 +31,7 @@ double physics_body_p_AU(physics_body_id_t id);
 double physics_body_eccentricity(physics_body_id_t id);
 double physics_body_perihel_AU(physics_body_id_t id);
 double physics_body_aphel_AU(physics_body_id_t id);
+double physics_body_angle_rad(double t_s, double epoche_rad, double p_AU);
 double physics_pi();
 double physics_seconds_per_day();
 double physics_barycenter_AU(double distance_AU, double mass_center_kg, double mass_satellite_kg);
