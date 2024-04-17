@@ -188,3 +188,12 @@ struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
     struct vector_3d r_AU = {cos(angle_rad) * R_AU, sin(angle_rad) * R_AU, 0.0};
     return r_AU;
 }
+
+struct vector_3d physics_czybor_w_rad_per_sec(physics_body_id_t id, double angle_rad)
+{
+    double W_rad_per_sec = (sqrt(1.0 - cos(angle_rad)) * sqrt(1.0 + cos(angle_rad)) *
+        sqrt(PHYSICS_G * physics_body_mass_kg(SUN_BARYCENTER) * pow(physics_body_eccentricity(id) * cos(angle_rad) + 1.0, 3.0) /
+            pow(physics_body_p_AU(id) * PHYSICS_AU, 3.0))) / fabs(sin(angle_rad));
+    struct vector_3d w_rad_per_sec = {0.0, 0.0, W_rad_per_sec};
+    return w_rad_per_sec;
+}
