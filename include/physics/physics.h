@@ -26,16 +26,16 @@ typedef enum
 
 void physics_initialize();
 const char* physics_body_name(physics_body_id_t id);
-double physics_body_mass(physics_body_id_t id);
+double physics_body_mass_kg(physics_body_id_t id);
+double physics_body_p_AU(physics_body_id_t id);
+double physics_body_eccentricity(physics_body_id_t id);
 double physics_body_perihel_AU(physics_body_id_t id);
 double physics_body_aphel_AU(physics_body_id_t id);
-double physics_initial_radii_AU(physics_body_id_t id);
 double physics_pi();
 double physics_seconds_per_day();
-double physics_seconds_per_siderial_day();
 double physics_barycenter_AU(double distance_AU, double mass_center_kg, double mass_satellite_kg);
-struct vector_3d physics_newton_angular_speed(vector_3d_t r_AU, double center_mass_kg);
 struct vector_3d physics_weber_gravitation_force(double m1_kg, double m2_kg, vector_3d_t r, vector_3d_t v, vector_3d_t a);
 struct vector_3d physics_tangential_speed(vector_3d_t w, vector_3d_t r);
 struct vector_3d physics_linear_motion(vector_3d_t v, double t_s);
 struct vector_3d physics_linear_angle(vector_3d_t w, double t_s);
+struct vector_3d physics_kepler_position_AU(physics_body_id_t id, double angle_rad);
