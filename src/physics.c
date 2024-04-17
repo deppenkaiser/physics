@@ -182,7 +182,7 @@ struct vector_3d physics_linear_angle(vector_3d_t w, double t_s)
     return vector_multiply_scalar(w, t_s);
 }
 
-struct vector_3d physics_kepler_position_AU(physics_body_id_t id, double angle_rad)
+struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
 {
     double R_AU = physics_body_p_AU(id) / (physics_body_eccentricity(id) * cos(angle_rad) + 1.0);
     struct vector_3d r_AU = {cos(angle_rad) * R_AU, sin(angle_rad) * R_AU, 0.0};

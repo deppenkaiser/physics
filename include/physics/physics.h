@@ -39,4 +39,4 @@ struct vector_3d physics_weber_gravitation_force(double m1_kg, double m2_kg, vec
 struct vector_3d physics_tangential_speed(vector_3d_t w, vector_3d_t r);
 struct vector_3d physics_linear_motion(vector_3d_t v, double t_s);
 struct vector_3d physics_linear_angle(vector_3d_t w, double t_s);
-struct vector_3d physics_kepler_position_AU(physics_body_id_t id, double angle_rad);
+struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad);
