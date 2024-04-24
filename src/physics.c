@@ -108,12 +108,14 @@ void physics_initialize()
 
 double physics_body_perihel_AU(physics_body_id_t id)
 {
-    return 0.0;
+    struct vector_3d r = physics_kepler_r_AU(id, 0.0);
+    return vector_norm(&r);
 }
 
 double physics_body_aphel_AU(physics_body_id_t id)
 {
-    return 0.0;
+    struct vector_3d r = physics_kepler_r_AU(id, physics_pi());
+    return vector_norm(&r);
 }
 
 const char* physics_body_name(physics_body_id_t id)
@@ -154,18 +156,6 @@ double physics_seconds_per_day()
 double physics_barycenter_AU(double distance_AU, double mass_center_kg, double mass_satellite_kg)
 {
     return distance_AU * mass_satellite_kg / (mass_center_kg + mass_satellite_kg);
-}
-
-struct vector_3d physics_newton_angular_speed(vector_3d_t r_AU, double center_mass_kg)
-{
-    struct vector_3d w = {0};
-    return w;
-}
-
-struct vector_3d physics_weber_gravitation_force(double m1_kg, double m2_kg, vector_3d_t r, vector_3d_t v, vector_3d_t a)
-{
-    struct vector_3d F = {0};
-    return F;
 }
 
 struct vector_3d physics_tangential_speed(vector_3d_t w, vector_3d_t r)

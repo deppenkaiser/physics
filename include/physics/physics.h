@@ -35,7 +35,6 @@ double physics_body_angle_rad(double t_s, double epoche_rad, double p_AU);
 double physics_pi();
 double physics_seconds_per_day();
 double physics_barycenter_AU(double distance_AU, double mass_center_kg, double mass_satellite_kg);
-struct vector_3d physics_weber_gravitation_force(double m1_kg, double m2_kg, vector_3d_t r, vector_3d_t v, vector_3d_t a);
 struct vector_3d physics_tangential_speed(vector_3d_t w, vector_3d_t r);
 struct vector_3d physics_linear_motion(vector_3d_t v, double t_s);
 struct vector_3d physics_linear_angle(vector_3d_t w, double t_s);
