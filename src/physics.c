@@ -2,6 +2,7 @@
 #include <vector/vector.h>
 #include <math.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #define PHYSICS_SUN_MASS 1.9884e30
 #define PHYSICS_MERCURY_MASS 3.301e23
