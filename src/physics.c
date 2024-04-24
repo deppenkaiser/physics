@@ -37,6 +37,17 @@
 #define PHYSICS_URANUS_ECCENTRICITY 0.04716771
 #define PHYSICS_NEPTUNE_ECCENTRICITY 0.00858587
 
+#define PHYSICS_SUN_I 0.0
+#define PHYSICS_MERCURY_I 7.00487
+#define PHYSICS_VENUS_I 3.39471
+#define PHYSICS_EARTH_I 0.00005
+#define PHYSICS_MOON_I 0.0549
+#define PHYSICS_MARS_I 1.85061
+#define PHYSICS_JUPITER_I 1.30530
+#define PHYSICS_SATURN_I 2.48446
+#define PHYSICS_URANUS_I 0.76986
+#define PHYSICS_NEPTUNE_I 1.76917
+
 double _physics_body_p_AU[] =
     {
         PHYSICS_SUN_P,
@@ -67,6 +78,22 @@ double _physics_body_eccentricity[] =
         PHYSICS_SATURN_ECCENTRICITY,
         PHYSICS_URANUS_ECCENTRICITY,
         PHYSICS_NEPTUNE_ECCENTRICITY
+    };
+
+double _physics_body_i[] =
+    {
+        PHYSICS_SUN_I,
+        0,
+        PHYSICS_MERCURY_I,
+        PHYSICS_VENUS_I,
+        PHYSICS_EARTH_I,
+        PHYSICS_EARTH_I,
+        PHYSICS_EARTH_I,
+        PHYSICS_MARS_I,
+        PHYSICS_JUPITER_I,
+        PHYSICS_SATURN_I,
+        PHYSICS_URANUS_I,
+        PHYSICS_NEPTUNE_I
     };
 
 double _physics_body_masses_kg[] =
@@ -138,6 +165,11 @@ double physics_body_eccentricity(physics_body_id_t id)
     return _physics_body_eccentricity[id];
 }
 
+double physics_body_i_rad(physics_body_id_t id)
+{
+    return _physics_body_i[id];
+}
+
 double physics_body_angle_rad(double t_s, double epoche_rad, double p_AU)
 {
     return sqrt(PHYSICS_G * _physics_body_masses_kg[SUN_BARYCENTER] / pow(p_AU * PHYSICS_AU, 3.0)) * t_s + epoche_rad;
@@ -146,6 +178,16 @@ double physics_body_angle_rad(double t_s, double epoche_rad, double p_AU)
 double physics_pi()
 {
     return acos(-1.0);
+}
+
+double physics_deg_to_rad(double angle_deg)
+{
+    return angle_deg * physics_pi() / 180.0;
+}
+
+double physics_rad_to_deg(double angle_rad)
+{
+    return angle_rad * 180.0 / physics_pi();
 }
 
 double physics_seconds_per_day()
