@@ -80,7 +80,7 @@ double _physics_body_eccentricity[] =
         PHYSICS_NEPTUNE_ECCENTRICITY
     };
 
-double _physics_body_i[] =
+double _physics_body_i_deg[] =
     {
         PHYSICS_SUN_I,
         0,
@@ -167,7 +167,7 @@ double physics_body_eccentricity(physics_body_id_t id)
 
 double physics_body_i_rad(physics_body_id_t id)
 {
-    return _physics_body_i[id];
+    return physics_deg_to_rad(_physics_body_i_deg[id]);
 }
 
 double physics_body_angle_rad(double t_s, double epoche_rad, double p_AU)
