@@ -30,6 +30,8 @@ double physics_body_mass_kg(physics_body_id_t id);
 double physics_body_p_AU(physics_body_id_t id);
 double physics_body_eccentricity(physics_body_id_t id);
 double physics_body_i_rad(physics_body_id_t id);
+double physics_body_node_rad(physics_body_id_t id);
+double physics_body_w_rad(physics_body_id_t id);
 double physics_body_perihel_AU(physics_body_id_t id);
 double physics_body_aphel_AU(physics_body_id_t id);
 double physics_body_angle_rad(double t_s, double epoche_rad, double p_AU);

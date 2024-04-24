@@ -48,6 +48,41 @@
 #define PHYSICS_URANUS_I 0.76986
 #define PHYSICS_NEPTUNE_I 1.76917
 
+// Aufsteigender Knoten
+#define PHYSICS_SUN_NODE 0.0
+#define PHYSICS_MERCURY_NODE 48.33167
+#define PHYSICS_VENUS_NODE 76.68069
+#define PHYSICS_EARTH_NODE -11.26064
+#define PHYSICS_MOON_NODE -11.26064
+#define PHYSICS_MARS_NODE 49.57854
+#define PHYSICS_JUPITER_NODE 100.55615
+#define PHYSICS_SATURN_NODE 113.71504
+#define PHYSICS_URANUS_NODE 74.22988
+#define PHYSICS_NEPTUNE_NODE 131.72169
+
+// Perihellänge
+#define PHYSICS_SUN_PL 0.0
+#define PHYSICS_MERCURY_PL 77.45645
+#define PHYSICS_VENUS_PL 131.53298
+#define PHYSICS_EARTH_PL 102.94719
+#define PHYSICS_MOON_PL 102.94719
+#define PHYSICS_MARS_PL 336.04084
+#define PHYSICS_JUPITER_PL 14.75385
+#define PHYSICS_SATURN_PL 92.43194
+#define PHYSICS_URANUS_PL 170.96424
+#define PHYSICS_NEPTUNE_PL 44.97135
+
+#define PHYSICS_SUN_W 0.0
+#define PHYSICS_MERCURY_W (PHYSICS_MERCURY_PL - PHYSICS_MERCURY_NODE)
+#define PHYSICS_VENUS_W (PHYSICS_VENUS_PL - PHYSICS_VENUS_NODE)
+#define PHYSICS_EARTH_W (PHYSICS_EARTH_PL - PHYSICS_EARTH_NODE)
+#define PHYSICS_MOON_W (PHYSICS_EARTH_PL - PHYSICS_EARTH_NODE)
+#define PHYSICS_MARS_W (PHYSICS_MARS_PL - PHYSICS_MARS_NODE)
+#define PHYSICS_JUPITER_W (PHYSICS_JUPITER_PL - PHYSICS_JUPITER_NODE)
+#define PHYSICS_SATURN_W (PHYSICS_SATURN_PL - PHYSICS_SATURN_NODE)
+#define PHYSICS_URANUS_W (PHYSICS_URANUS_PL - PHYSICS_URANUS_NODE)
+#define PHYSICS_NEPTUNE_W (PHYSICS_NEPTUNE_PL - PHYSICS_NEPTUNE_NODE)
+
 double _physics_body_p_AU[] =
     {
         PHYSICS_SUN_P,
@@ -94,6 +129,38 @@ double _physics_body_i_deg[] =
         PHYSICS_SATURN_I,
         PHYSICS_URANUS_I,
         PHYSICS_NEPTUNE_I
+    };
+
+double _physics_body_node_deg[] =
+    {
+        PHYSICS_SUN_NODE,
+        0,
+        PHYSICS_MERCURY_NODE,
+        PHYSICS_VENUS_NODE,
+        PHYSICS_EARTH_NODE,
+        PHYSICS_EARTH_NODE,
+        PHYSICS_EARTH_NODE,
+        PHYSICS_MARS_NODE,
+        PHYSICS_JUPITER_NODE,
+        PHYSICS_SATURN_NODE,
+        PHYSICS_URANUS_NODE,
+        PHYSICS_NEPTUNE_NODE
+    };
+
+double _physics_body_w_deg[] =
+    {
+        PHYSICS_SUN_W,
+        0,
+        PHYSICS_MERCURY_W,
+        PHYSICS_VENUS_W,
+        PHYSICS_EARTH_W,
+        PHYSICS_EARTH_W,
+        PHYSICS_EARTH_W,
+        PHYSICS_MARS_W,
+        PHYSICS_JUPITER_W,
+        PHYSICS_SATURN_W,
+        PHYSICS_URANUS_W,
+        PHYSICS_NEPTUNE_W
     };
 
 double _physics_body_masses_kg[] =
@@ -168,6 +235,16 @@ double physics_body_eccentricity(physics_body_id_t id)
 double physics_body_i_rad(physics_body_id_t id)
 {
     return physics_deg_to_rad(_physics_body_i_deg[id]);
+}
+
+double physics_body_node_rad(physics_body_id_t id)
+{
+    return physics_deg_to_rad(_physics_body_node_deg[id]);
+}
+
+double physics_body_w_rad(physics_body_id_t id)
+{
+    return physics_deg_to_rad(_physics_body_w_deg[id]);
 }
 
 double physics_body_angle_rad(double t_s, double epoche_rad, double p_AU)
