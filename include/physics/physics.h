@@ -27,7 +27,7 @@ typedef enum
 void physics_initialize();
 const char* physics_body_name(physics_body_id_t id);
 double physics_body_mass_kg(physics_body_id_t id);
-double physics_body_p_AU(physics_body_id_t id);
+double physics_body_a_AU(physics_body_id_t id);
 double physics_body_eccentricity(physics_body_id_t id);
 double physics_body_i_rad(physics_body_id_t id);
 double physics_body_node_rad(physics_body_id_t id);

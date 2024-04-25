@@ -15,16 +15,16 @@
 #define PHYSICS_URANUS_MASS 8.681e25
 #define PHYSICS_NEPTUNE_MASS 1.024e26
 
-#define PHYSICS_SUN_P 0.0
-#define PHYSICS_MERCURY_P 0.38709893
-#define PHYSICS_VENUS_P 0.72333199
-#define PHYSICS_EARTH_P 1.00000011
-#define PHYSICS_MOON_P (384400.0e3 / PHYSICS_AU)
-#define PHYSICS_MARS_P 1.52366231
-#define PHYSICS_JUPITER_P 5.20336301
-#define PHYSICS_SATURN_P 9.53707032
-#define PHYSICS_URANUS_P 19.19126393
-#define PHYSICS_NEPTUNE_P 30.06896348
+#define PHYSICS_SUN_A 0.0
+#define PHYSICS_MERCURY_A 0.38709893
+#define PHYSICS_VENUS_A 0.72333199
+#define PHYSICS_EARTH_A 1.00000011
+#define PHYSICS_MOON_A (384400.0e3 / PHYSICS_AU)
+#define PHYSICS_MARS_A 1.52366231
+#define PHYSICS_JUPITER_A 5.20336301
+#define PHYSICS_SATURN_A 9.53707032
+#define PHYSICS_URANUS_A 19.19126393
+#define PHYSICS_NEPTUNE_A 30.06896348
 
 #define PHYSICS_SUN_ECCENTRICITY 0.0
 #define PHYSICS_MERCURY_ECCENTRICITY 0.20563069
@@ -83,20 +83,20 @@
 #define PHYSICS_URANUS_W (PHYSICS_URANUS_PL - PHYSICS_URANUS_NODE)
 #define PHYSICS_NEPTUNE_W (PHYSICS_NEPTUNE_PL - PHYSICS_NEPTUNE_NODE)
 
-double _physics_body_p_AU[] =
+double _physics_body_a_AU[] =
     {
-        PHYSICS_SUN_P,
+        PHYSICS_SUN_A,
         0,
-        PHYSICS_MERCURY_P,
-        PHYSICS_VENUS_P,
-        PHYSICS_EARTH_P,
-        PHYSICS_MOON_P,
-        PHYSICS_EARTH_P,
-        PHYSICS_MARS_P,
-        PHYSICS_JUPITER_P,
-        PHYSICS_SATURN_P,
-        PHYSICS_URANUS_P,
-        PHYSICS_NEPTUNE_P
+        PHYSICS_MERCURY_A,
+        PHYSICS_VENUS_A,
+        PHYSICS_EARTH_A,
+        PHYSICS_MOON_A,
+        PHYSICS_EARTH_A,
+        PHYSICS_MARS_A,
+        PHYSICS_JUPITER_A,
+        PHYSICS_SATURN_A,
+        PHYSICS_URANUS_A,
+        PHYSICS_NEPTUNE_A
     };
 
 double _physics_body_eccentricity[] =
@@ -222,9 +222,9 @@ double physics_body_mass_kg(physics_body_id_t id)
     return _physics_body_masses_kg[id];
 }
 
-double physics_body_p_AU(physics_body_id_t id)
+double physics_body_a_AU(physics_body_id_t id)
 {
-    return _physics_body_p_AU[id];
+    return _physics_body_a_AU[id];
 }
 
 double physics_body_eccentricity(physics_body_id_t id)
@@ -294,7 +294,8 @@ struct vector_3d physics_linear_angle(vector_3d_t w, double t_s)
 
 struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
 {
-    double R_AU = physics_body_p_AU(id) / (physics_body_eccentricity(id) * cos(angle_rad) + 1.0);
+    double e = physics_body_eccentricity(id);
+    double R_AU = physics_body_a_AU(id) * (1.0 - e * e) / (e * cos(angle_rad) + 1.0);
     struct vector_3d r_AU = {cos(angle_rad) * R_AU, sin(angle_rad) * R_AU, 0.0};
     return r_AU;
 }
@@ -303,7 +304,7 @@ struct vector_3d physics_czybor_w_rad_per_sec(physics_body_id_t id, double angle
 {
     double W_rad_per_sec = (sqrt(1.0 - cos(angle_rad)) * sqrt(1.0 + cos(angle_rad)) *
         sqrt(PHYSICS_G * physics_body_mass_kg(SUN_BARYCENTER) * pow(physics_body_eccentricity(id) * cos(angle_rad) + 1.0, 3.0) /
-            pow(physics_body_p_AU(id) * PHYSICS_AU, 3.0))) / fabs(sin(angle_rad));
+            pow(physics_body_a_AU(id) * PHYSICS_AU, 3.0))) / fabs(sin(angle_rad));
     struct vector_3d w_rad_per_sec = {0.0, 0.0, W_rad_per_sec};
     return w_rad_per_sec;
 }
