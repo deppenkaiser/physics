@@ -34,7 +34,7 @@ double physics_body_node_rad(physics_body_id_t id);
 double physics_body_w_rad(physics_body_id_t id);
 double physics_body_perihel_AU(physics_body_id_t id);
 double physics_body_aphel_AU(physics_body_id_t id);
-double physics_body_angle_rad(double t_s, double epoche_rad, double p_AU);
+double physics_body_angle_rad(double t_s, double p_AU);
 double physics_pi();
 double physics_deg_to_rad();
 double physics_rad_to_deg();
