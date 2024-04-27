@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+// https://www.imcce.fr/
+
 #define PHYSICS_SUN_MASS 1.9884e30
 #define PHYSICS_MERCURY_MASS 3.301e23
 #define PHYSICS_VENUS_MASS 4.8673e24
