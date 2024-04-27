@@ -73,15 +73,15 @@
 #define PHYSICS_NEPTUNE_PL 48.12027554
 
 #define PHYSICS_SUN_W 0.0
-#define PHYSICS_MERCURY_W (PHYSICS_MERCURY_PL - PHYSICS_MERCURY_NODE)
-#define PHYSICS_VENUS_W (PHYSICS_VENUS_PL - PHYSICS_VENUS_NODE)
-#define PHYSICS_EARTH_W (PHYSICS_EARTH_PL - PHYSICS_EARTH_NODE)
-#define PHYSICS_MOON_W (PHYSICS_EARTH_PL - PHYSICS_EARTH_NODE)
-#define PHYSICS_MARS_W (PHYSICS_MARS_PL - PHYSICS_MARS_NODE)
-#define PHYSICS_JUPITER_W (PHYSICS_JUPITER_PL - PHYSICS_JUPITER_NODE)
-#define PHYSICS_SATURN_W (PHYSICS_SATURN_PL - PHYSICS_SATURN_NODE)
-#define PHYSICS_URANUS_W (PHYSICS_URANUS_PL - PHYSICS_URANUS_NODE)
-#define PHYSICS_NEPTUNE_W (PHYSICS_NEPTUNE_PL - PHYSICS_NEPTUNE_NODE)
+#define PHYSICS_MERCURY_W 29.125226
+#define PHYSICS_VENUS_W 54.88378281
+#define PHYSICS_EARTH_W 100.46645683
+#define PHYSICS_MOON_W 100.46645683
+#define PHYSICS_MARS_W 286.50214074
+#define PHYSICS_JUPITER_W 273.86679985
+#define PHYSICS_SATURN_W 339.39173496
+#define PHYSICS_URANUS_W 98.99933405
+#define PHYSICS_NEPTUNE_W 276.33621852
 
 double _physics_body_a_AU[] =
     {
@@ -250,10 +250,9 @@ double physics_body_w_rad(physics_body_id_t id)
 double physics_body_angle_rad(physics_body_id_t planet_id, physics_body_id_t center_id, double t_s)
 {
     double e = physics_body_eccentricity(planet_id);
-    double w = -physics_body_w_rad(planet_id);
     double M_kg = physics_body_mass_kg(center_id);
     double a_m = physics_body_a_AU(planet_id) * PHYSICS_AU;
-    return sqrt(-(PHYSICS_G * M_kg) / (pow(a_m, 3.0) * pow(e - 1.0, 3.0) * pow(e + 1.0, 3.0))) * t_s + w;
+    return sqrt(-(PHYSICS_G * M_kg) / (pow(a_m, 3.0) * pow(e - 1.0, 3.0) * pow(e + 1.0, 3.0))) * t_s;
 }
 
 double physics_pi()
@@ -300,8 +299,9 @@ struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
 {
     double e = physics_body_eccentricity(id);
     double a_AU = physics_body_a_AU(id);
+    double w = physics_body_w_rad(id);
     double R_AU = a_AU * (1.0 - e * e) / (e * cos(angle_rad) + 1.0);
-    struct vector_3d r_AU = {cos(angle_rad) * R_AU, sin(angle_rad) * R_AU, 0.0};
+    struct vector_3d r_AU = {cos(angle_rad + w) * R_AU, sin(angle_rad + w) * R_AU, 0.0};
     return r_AU;
 }
 
