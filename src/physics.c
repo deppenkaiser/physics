@@ -16,61 +16,61 @@
 #define PHYSICS_NEPTUNE_MASS 1.024e26
 
 #define PHYSICS_SUN_A 0.0
-#define PHYSICS_MERCURY_A /*0.38709893*/ /*0.3870983098*/ 0.38709843
-#define PHYSICS_VENUS_A /*0.72333199*/ 0.7233298200
-#define PHYSICS_EARTH_A /*1.00000011*/ 1.0000010178
+#define PHYSICS_MERCURY_A 0.3870983098
+#define PHYSICS_VENUS_A 0.7233298200
+#define PHYSICS_EARTH_A 1.0000010178
 #define PHYSICS_MOON_A (384400.0e3 / PHYSICS_AU)
-#define PHYSICS_MARS_A /*1.52366231*/ 1.5236793419
-#define PHYSICS_JUPITER_A /*5.20336301*/ /*5.2026032092*/ 5.20248019
-#define PHYSICS_SATURN_A /*9.53707032*/ 9.5549091915
-#define PHYSICS_URANUS_A /*19.19126393*/ 19.2184460618
-#define PHYSICS_NEPTUNE_A /*30.06896348*/ 30.1103868694
+#define PHYSICS_MARS_A 1.5236793419
+#define PHYSICS_JUPITER_A 5.2026032092
+#define PHYSICS_SATURN_A 9.5549091915
+#define PHYSICS_URANUS_A 19.2184460618
+#define PHYSICS_NEPTUNE_A 30.1103868694
 
 #define PHYSICS_SUN_ECCENTRICITY 0.0
-#define PHYSICS_MERCURY_ECCENTRICITY /*0.20563069*/ 0.2056317526
-#define PHYSICS_VENUS_ECCENTRICITY /*0.00677323*/ 0.0067719164
-#define PHYSICS_EARTH_ECCENTRICITY /*0.01671022*/ 0.0167086342
+#define PHYSICS_MERCURY_ECCENTRICITY 0.2056317526
+#define PHYSICS_VENUS_ECCENTRICITY 0.0067719164
+#define PHYSICS_EARTH_ECCENTRICITY 0.0167086342
 #define PHYSICS_MOON_ECCENTRICITY 0.0549
-#define PHYSICS_MARS_ECCENTRICITY /*0.09341233*/ 0.0934006477
-#define PHYSICS_JUPITER_ECCENTRICITY /*0.04839266*/ /*0.0484979255*/ 0.04853590
-#define PHYSICS_SATURN_ECCENTRICITY /*0.05415060*/ 0.0555481426
-#define PHYSICS_URANUS_ECCENTRICITY /*0.04716771*/ 0.0463812221
-#define PHYSICS_NEPTUNE_ECCENTRICITY /*0.00858587*/ 0.009455747
+#define PHYSICS_MARS_ECCENTRICITY 0.0934006477
+#define PHYSICS_JUPITER_ECCENTRICITY 0.0484979255
+#define PHYSICS_SATURN_ECCENTRICITY 0.0555481426
+#define PHYSICS_URANUS_ECCENTRICITY 0.0463812221
+#define PHYSICS_NEPTUNE_ECCENTRICITY 0.009455747
 
 #define PHYSICS_SUN_I 0.0
-#define PHYSICS_MERCURY_I /*7.00487*/ 7.00498625
-#define PHYSICS_VENUS_I /*3.39471*/ 3.39466189
-#define PHYSICS_EARTH_I /*0.00005*/ 0.0
-#define PHYSICS_MOON_I /*0.0549*/ 0.0
-#define PHYSICS_MARS_I /*1.85061*/ 1.84972648
-#define PHYSICS_JUPITER_I /*1.30530*/ /*1.30326698*/ 1.29861416
-#define PHYSICS_SATURN_I /*2.48446*/ 2.48887878
-#define PHYSICS_URANUS_I /*0.76986*/ 0.77319689
-#define PHYSICS_NEPTUNE_I /*1.76917*/ 1.76995259
+#define PHYSICS_MERCURY_I 7.00498625
+#define PHYSICS_VENUS_I 3.39466189
+#define PHYSICS_EARTH_I 0.0
+#define PHYSICS_MOON_I 0.0
+#define PHYSICS_MARS_I 1.84972648
+#define PHYSICS_JUPITER_I 1.30326698
+#define PHYSICS_SATURN_I 2.48887878
+#define PHYSICS_URANUS_I 0.77319689
+#define PHYSICS_NEPTUNE_I 1.76995259
 
 // Aufsteigender Knoten
 #define PHYSICS_SUN_NODE 0.0
-#define PHYSICS_MERCURY_NODE /*48.33167*/ 48.33089304
-#define PHYSICS_VENUS_NODE /*76.68069*/ 76.67992019
-#define PHYSICS_EARTH_NODE /*-11.26064*/ 0.0
-#define PHYSICS_MOON_NODE /*-11.26064*/ 0.0
-#define PHYSICS_MARS_NODE /*49.57854*/ 49.55809321
-#define PHYSICS_JUPITER_NODE /*100.55615*/ /*100.46440702*/ 100.29282654
-#define PHYSICS_SATURN_NODE /*113.71504*/ 113.66550252
-#define PHYSICS_URANUS_NODE /*74.22988*/ 74.00595701
-#define PHYSICS_NEPTUNE_NODE /*131.72169*/ 131.78405702
+#define PHYSICS_MERCURY_NODE 48.33089304
+#define PHYSICS_VENUS_NODE 76.67992019
+#define PHYSICS_EARTH_NODE 0.0
+#define PHYSICS_MOON_NODE 0.0
+#define PHYSICS_MARS_NODE 49.55809321
+#define PHYSICS_JUPITER_NODE 100.46440702
+#define PHYSICS_SATURN_NODE 113.66550252
+#define PHYSICS_URANUS_NODE 74.00595701
+#define PHYSICS_NEPTUNE_NODE 131.78405702
 
 // Perihellänge
 #define PHYSICS_SUN_PL 0.0
-#define PHYSICS_MERCURY_PL /*77.45645*/ 77.45611904
-#define PHYSICS_VENUS_PL /*131.53298*/ 131.56370300
-#define PHYSICS_EARTH_PL /*102.94719*/ 102.93734808
-#define PHYSICS_MOON_PL /*102.94719*/ 102.93734808
-#define PHYSICS_MARS_PL /*336.04084*/ 336.06023395
-#define PHYSICS_JUPITER_PL /*14.75385*/ /*14.33120687*/ 14.27495244
-#define PHYSICS_SATURN_PL /*92.43194*/ 93.05723748
-#define PHYSICS_URANUS_PL /*170.96424*/ 173.00529106
-#define PHYSICS_NEPTUNE_PL /*44.97135*/ 48.12027554
+#define PHYSICS_MERCURY_PL 77.45611904
+#define PHYSICS_VENUS_PL 131.56370300
+#define PHYSICS_EARTH_PL 102.93734808
+#define PHYSICS_MOON_PL 102.93734808
+#define PHYSICS_MARS_PL 336.06023395
+#define PHYSICS_JUPITER_PL 14.33120687
+#define PHYSICS_SATURN_PL 93.05723748
+#define PHYSICS_URANUS_PL 173.00529106
+#define PHYSICS_NEPTUNE_PL 48.12027554
 
 #define PHYSICS_SUN_W 0.0
 #define PHYSICS_MERCURY_W (PHYSICS_MERCURY_PL - PHYSICS_MERCURY_NODE)
@@ -247,9 +247,13 @@ double physics_body_w_rad(physics_body_id_t id)
     return physics_deg_to_rad(_physics_body_w_deg[id]);
 }
 
-double physics_body_angle_rad(double t_s, double p_AU)
+double physics_body_angle_rad(physics_body_id_t planet_id, physics_body_id_t center_id, double t_s)
 {
-    return sqrt(PHYSICS_G * _physics_body_masses_kg[SUN_BARYCENTER] / pow(p_AU * PHYSICS_AU, 3.0)) * t_s;
+    double e = physics_body_eccentricity(planet_id);
+    double w = -physics_body_w_rad(planet_id);
+    double M_kg = physics_body_mass_kg(center_id);
+    double a_m = physics_body_a_AU(planet_id) * PHYSICS_AU;
+    return sqrt(-(PHYSICS_G * M_kg) / (pow(a_m, 3.0) * pow(e - 1.0, 3.0) * pow(e + 1.0, 3.0))) * t_s + w;
 }
 
 double physics_pi()
@@ -295,17 +299,15 @@ struct vector_3d physics_linear_angle(vector_3d_t w, double t_s)
 struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
 {
     double e = physics_body_eccentricity(id);
-    double w = physics_body_w_rad(id);
-    double R_AU = physics_body_a_AU(id) * (1.0 - e * e) / (e * cos(angle_rad) + 1.0);
-    struct vector_3d r_AU = {cos(angle_rad + w) * R_AU, sin(angle_rad + w) * R_AU, 0.0};
+    double a_AU = physics_body_a_AU(id);
+    double R_AU = a_AU * (1.0 - e * e) / (e * cos(angle_rad) + 1.0);
+    struct vector_3d r_AU = {cos(angle_rad) * R_AU, sin(angle_rad) * R_AU, 0.0};
     return r_AU;
 }
 
-struct vector_3d physics_czybor_w_rad_per_sec(physics_body_id_t id, double angle_rad)
+struct vector_3d physics_czybor_angular_speed_rad_per_sec(physics_body_id_t planet_id, physics_body_id_t center_id, double t_s)
 {
-    double W_rad_per_sec = (sqrt(1.0 - cos(angle_rad)) * sqrt(1.0 + cos(angle_rad)) *
-        sqrt(PHYSICS_G * physics_body_mass_kg(SUN_BARYCENTER) * pow(physics_body_eccentricity(id) * cos(angle_rad) + 1.0, 3.0) /
-            pow(physics_body_a_AU(id) * PHYSICS_AU, 3.0))) / fabs(sin(angle_rad));
+    double W_rad_per_sec = physics_body_angle_rad(planet_id, center_id, t_s);
     struct vector_3d w_rad_per_sec = {0.0, 0.0, W_rad_per_sec};
     return w_rad_per_sec;
 }
