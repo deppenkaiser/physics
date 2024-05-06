@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <float.h>
 
 // https://www.imcce.fr/
 
@@ -249,12 +250,52 @@ double physics_body_w_rad(physics_body_id_t id)
     return physics_deg_to_rad(_physics_body_w_deg[id]);
 }
 
-double physics_body_angle_rad(physics_body_id_t planet_id, physics_body_id_t center_id, double t_s)
+double physics_frac(double x)
+{
+    return x - floor(x);
+}
+
+double physics_modulo(double a, double b)
+{
+    return b * physics_frac(a / b);
+}
+
+double physics_czybor_angular_speed_rad_per_sec(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_rad)
 {
     double e = physics_body_eccentricity(planet_id);
     double M_kg = physics_body_mass_kg(center_id);
     double a_m = physics_body_a_AU(planet_id) * PHYSICS_AU;
-    return sqrt(-(PHYSICS_G * M_kg) / (pow(a_m, 3.0) * pow(e - 1.0, 3.0) * pow(e + 1.0, 3.0))) * t_s;
+    double cos_phi = cos(phi_rad);
+    double angular_speed_rad_per_sec = 0.0;
+    if (phi_rad != 0.0)
+    {
+        angular_speed_rad_per_sec = sqrt(1.0 - cos_phi) * sqrt(1.0 + cos_phi) *
+            sqrt(-(PHYSICS_G * M_kg * pow(e * cos_phi + 1.0, 3.0)) /
+                (pow(a_m, 3.0) * pow(e - 1.0, 3.0) * pow(e + 1.0, 3.0))) / fabs(sin(phi_rad));
+
+        bool is_zero = angular_speed_rad_per_sec == 0.0;
+
+        if (is_zero)
+        {
+            double angular_speed_top_rad_per_sec = physics_czybor_angular_speed_rad_per_sec(planet_id, center_id, phi_rad + FLT_EPSILON);
+            double angular_speed_bottom_rad_per_sec = physics_czybor_angular_speed_rad_per_sec(planet_id, center_id, phi_rad - FLT_EPSILON);
+            angular_speed_rad_per_sec = (angular_speed_top_rad_per_sec + angular_speed_bottom_rad_per_sec) / 2.0;
+        }
+    }
+    else
+    {
+        angular_speed_rad_per_sec = sqrt(1.0 + cos_phi) *
+        sqrt(-(PHYSICS_G * M_kg * pow(e * cos_phi + 1.0, 3.0)) / (pow(a_m, 3.0) * pow(e - 1.0, 3.0) * pow(e + 1.0, 3.0)));
+    }
+    return angular_speed_rad_per_sec;
+}
+
+double physics_czybor_mean_angular_speed_rad_per_sec(physics_body_id_t planet_id, physics_body_id_t center_id)
+{
+    double e = physics_body_eccentricity(planet_id);
+    double M_kg = physics_body_mass_kg(center_id);
+    double a_m = physics_body_a_AU(planet_id) * PHYSICS_AU;
+    return sqrt(-(PHYSICS_G * M_kg) / (pow(a_m, 3.0) * pow(e - 1.0, 3.0) * pow(e + 1.0, 3.0)));
 }
 
 double physics_pi()
@@ -282,6 +323,18 @@ double physics_barycenter_AU(double distance_AU, double mass_center_kg, double m
     return distance_AU * mass_satellite_kg / (mass_center_kg + mass_satellite_kg);
 }
 
+double physics_orbital_period(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_1_rad, double phi_2_rad, uint32_t step_count)
+{
+    double dx = (phi_2_rad - phi_1_rad) / step_count;
+    double sum_s = 0.0;
+    for (uint32_t i = 0; i < step_count; ++i)
+    {
+        double phi_rad = phi_1_rad + i * dx;
+        sum_s += 1.0 / physics_czybor_angular_speed_rad_per_sec(planet_id, center_id, phi_rad);
+    }
+    return sum_s * dx;
+}
+
 struct vector_3d physics_tangential_speed(vector_3d_t w, vector_3d_t r)
 {
     return vector_cross(w, r);
@@ -301,15 +354,7 @@ struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
 {
     double e = physics_body_eccentricity(id);
     double a_AU = physics_body_a_AU(id);
-    double w = physics_body_w_rad(id);
     double R_AU = a_AU * (1.0 - e * e) / (e * cos(angle_rad) + 1.0);
-    struct vector_3d r_AU = {cos(angle_rad + w) * R_AU, sin(angle_rad + w) * R_AU, 0.0};
+    struct vector_3d r_AU = {cos(angle_rad) * R_AU, sin(angle_rad) * R_AU, 0.0};
     return r_AU;
-}
-
-struct vector_3d physics_czybor_angular_speed_rad_per_sec(physics_body_id_t planet_id, physics_body_id_t center_id, double t_s)
-{
-    double W_rad_per_sec = physics_body_angle_rad(planet_id, center_id, t_s);
-    struct vector_3d w_rad_per_sec = {0.0, 0.0, W_rad_per_sec};
-    return w_rad_per_sec;
 }

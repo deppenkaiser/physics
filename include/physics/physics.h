@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <vector/vector.h>
 
 #define PHYSICS_C 299792458.0
@@ -34,14 +35,17 @@ double physics_body_node_rad(physics_body_id_t id);
 double physics_body_w_rad(physics_body_id_t id);
 double physics_body_perihel_AU(physics_body_id_t id);
 double physics_body_aphel_AU(physics_body_id_t id);
-double physics_body_angle_rad(physics_body_id_t planet_id, physics_body_id_t center_id, double t_s);
+double physics_czybor_angular_speed_rad_per_sec(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_rad);
+double physics_czybor_mean_angular_speed_rad_per_sec(physics_body_id_t planet_id, physics_body_id_t center_id);
 double physics_pi();
+double physics_frac(double x);
+double physics_modulo(double a, double b);
 double physics_deg_to_rad();
 double physics_rad_to_deg();
 double physics_seconds_per_day();
 double physics_barycenter_AU(double distance_AU, double mass_center_kg, double mass_satellite_kg);
+double physics_orbital_period(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_1_rad, double phi_2_rad, uint32_t step_count);
 struct vector_3d physics_tangential_speed(vector_3d_t w, vector_3d_t r);
 struct vector_3d physics_linear_motion(vector_3d_t v, double t_s);
 struct vector_3d physics_linear_angle(vector_3d_t w, double t_s);
 struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad);
-struct vector_3d physics_czybor_angular_speed_rad_per_sec(physics_body_id_t planet_id, physics_body_id_t center_id, double t_s);
