@@ -265,8 +265,11 @@ double physics_czybor_angular_speed_rad_per_sec(physics_body_id_t planet_id, phy
     double e = physics_body_eccentricity(planet_id);
     double M_kg = physics_body_mass_kg(center_id);
     double a_m = physics_body_a_AU(planet_id) * PHYSICS_AU;
-    double cos_phi = cos(phi_rad);
     double angular_speed_rad_per_sec = 0.0;
+
+    phi_rad = physics_modulo(phi_rad, 2.0 * physics_pi());
+    double cos_phi = cos(phi_rad);
+
     if (phi_rad != 0.0)
     {
         angular_speed_rad_per_sec = sqrt(1.0 - cos_phi) * sqrt(1.0 + cos_phi) *
@@ -284,9 +287,9 @@ double physics_czybor_angular_speed_rad_per_sec(physics_body_id_t planet_id, phy
     }
     else
     {
-        angular_speed_rad_per_sec = sqrt(1.0 + cos_phi) *
-        sqrt(-(PHYSICS_G * M_kg * pow(e * cos_phi + 1.0, 3.0)) / (pow(a_m, 3.0) * pow(e - 1.0, 3.0) * pow(e + 1.0, 3.0)));
+        angular_speed_rad_per_sec = sqrt(2.0) * sqrt(-(PHYSICS_G * M_kg / (pow(a_m, 3.0) * pow(e - 1.0, 3.0))));
     }
+
     return angular_speed_rad_per_sec;
 }
 
