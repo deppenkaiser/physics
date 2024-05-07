@@ -260,40 +260,40 @@ double physics_modulo(double a, double b)
     return b * physics_frac(a / b);
 }
 
-double physics_czybor_angular_speed_rad_per_sec(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_rad)
+double physics_czybor_angular_speed_rad_per_s(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_rad)
 {
     double e = physics_body_eccentricity(planet_id);
     double M_kg = physics_body_mass_kg(center_id);
     double a_m = physics_body_a_AU(planet_id) * PHYSICS_AU;
-    double angular_speed_rad_per_sec = 0.0;
+    double angular_speed_rad_per_s = 0.0;
 
     phi_rad = physics_modulo(phi_rad, 2.0 * physics_pi());
     double cos_phi = cos(phi_rad);
 
     if (phi_rad != 0.0)
     {
-        angular_speed_rad_per_sec = sqrt(1.0 - cos_phi) * sqrt(1.0 + cos_phi) *
+        angular_speed_rad_per_s = sqrt(1.0 - cos_phi) * sqrt(1.0 + cos_phi) *
             sqrt(-(PHYSICS_G * M_kg * pow(e * cos_phi + 1.0, 3.0)) /
                 (pow(a_m, 3.0) * pow(e - 1.0, 3.0) * pow(e + 1.0, 3.0))) / fabs(sin(phi_rad));
 
-        bool is_zero = angular_speed_rad_per_sec == 0.0;
+        bool is_zero = angular_speed_rad_per_s == 0.0;
 
         if (is_zero)
         {
-            double angular_speed_top_rad_per_sec = physics_czybor_angular_speed_rad_per_sec(planet_id, center_id, phi_rad + FLT_EPSILON);
-            double angular_speed_bottom_rad_per_sec = physics_czybor_angular_speed_rad_per_sec(planet_id, center_id, phi_rad - FLT_EPSILON);
-            angular_speed_rad_per_sec = (angular_speed_top_rad_per_sec + angular_speed_bottom_rad_per_sec) / 2.0;
+            double angular_speed_top_rad_per_sec = physics_czybor_angular_speed_rad_per_s(planet_id, center_id, phi_rad + FLT_EPSILON);
+            double angular_speed_bottom_rad_per_sec = physics_czybor_angular_speed_rad_per_s(planet_id, center_id, phi_rad - FLT_EPSILON);
+            angular_speed_rad_per_s = (angular_speed_top_rad_per_sec + angular_speed_bottom_rad_per_sec) / 2.0;
         }
     }
     else
     {
-        angular_speed_rad_per_sec = sqrt(2.0) * sqrt(-(PHYSICS_G * M_kg / (pow(a_m, 3.0) * pow(e - 1.0, 3.0))));
+        angular_speed_rad_per_s = sqrt(2.0) * sqrt(-(PHYSICS_G * M_kg / (pow(a_m, 3.0) * pow(e - 1.0, 3.0))));
     }
 
-    return angular_speed_rad_per_sec;
+    return angular_speed_rad_per_s;
 }
 
-double physics_czybor_mean_angular_speed_rad_per_sec(physics_body_id_t planet_id, physics_body_id_t center_id)
+double physics_czybor_mean_angular_speed_rad_per_s(physics_body_id_t planet_id, physics_body_id_t center_id)
 {
     double e = physics_body_eccentricity(planet_id);
     double M_kg = physics_body_mass_kg(center_id);
@@ -326,14 +326,14 @@ double physics_barycenter_AU(double distance_AU, double mass_center_kg, double m
     return distance_AU * mass_satellite_kg / (mass_center_kg + mass_satellite_kg);
 }
 
-double physics_orbital_period(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_1_rad, double phi_2_rad, uint32_t step_count)
+double physics_orbital_period_s(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_1_rad, double phi_2_rad, uint32_t step_count)
 {
     double dx = (phi_2_rad - phi_1_rad) / step_count;
     double sum_s = 0.0;
     for (uint32_t i = 0; i < step_count; ++i)
     {
         double phi_rad = phi_1_rad + i * dx;
-        sum_s += 1.0 / physics_czybor_angular_speed_rad_per_sec(planet_id, center_id, phi_rad);
+        sum_s += 1.0 / physics_czybor_angular_speed_rad_per_s(planet_id, center_id, phi_rad);
     }
     return sum_s * dx;
 }
