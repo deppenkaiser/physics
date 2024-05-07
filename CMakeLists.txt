@@ -11,6 +11,8 @@ target_sources(physics PRIVATE
 target_include_directories(physics PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/include
     ${CMAKE_CURRENT_LIST_DIR}/../vector/include
+    ${CMAKE_CURRENT_LIST_DIR}/../logging/include
+    ${CMAKE_CURRENT_LIST_DIR}/../string/include
 )
 
 target_link_libraries(physics

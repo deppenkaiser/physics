@@ -25,7 +25,6 @@ typedef enum
     PHYSICS_BODY_COUNT = 12
 } physics_body_id_t;
 
-void physics_initialize();
 const char* physics_body_name(physics_body_id_t id);
 double physics_body_mass_kg(physics_body_id_t id);
 double physics_body_a_AU(physics_body_id_t id);
@@ -45,7 +44,6 @@ double physics_rad_to_deg();
 double physics_seconds_per_day();
 double physics_barycenter_AU(double distance_AU, double mass_center_kg, double mass_satellite_kg);
 double physics_orbital_period_s(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_1_rad, double phi_2_rad, uint32_t step_count);
-struct vector_3d physics_tangential_speed(vector_3d_t w, vector_3d_t r);
-struct vector_3d physics_linear_motion(vector_3d_t v, double t_s);
-struct vector_3d physics_linear_angle(vector_3d_t w, double t_s);
+double physics_optimized_orbital_period_s(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_1_rad, double phi_2_rad, double threshold_s);
+double physics_full_orbital_period_days(physics_body_id_t planet_id, physics_body_id_t center_id);
 struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad);

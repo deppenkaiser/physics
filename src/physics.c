@@ -1,8 +1,11 @@
 #include "physics/physics.h"
 #include <vector/vector.h>
+#include <logging/logging.h>
+#include <string/string.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <float.h>
 
 // https://www.imcce.fr/
@@ -199,10 +202,6 @@ const char* _physics_body_names[] =
         "neptune"
     };
 
-void physics_initialize()
-{
-}
-
 double physics_body_perihel_AU(physics_body_id_t id)
 {
     struct vector_3d r = physics_kepler_r_AU(id, 0.0);
@@ -326,31 +325,49 @@ double physics_barycenter_AU(double distance_AU, double mass_center_kg, double m
     return distance_AU * mass_satellite_kg / (mass_center_kg + mass_satellite_kg);
 }
 
-double physics_orbital_period_s(physics_body_id_t planet_id, physics_body_id_t center_id, double phi_1_rad, double phi_2_rad, uint32_t step_count)
+double physics_orbital_period_s(physics_body_id_t planet_id, physics_body_id_t center_id,
+    double phi_1_rad, double phi_2_rad, uint32_t step_count)
 {
-    double dx = (phi_2_rad - phi_1_rad) / step_count;
+    double dx_rad = (phi_2_rad - phi_1_rad) / step_count;
     double sum_s = 0.0;
     for (uint32_t i = 0; i < step_count; ++i)
     {
-        double phi_rad = phi_1_rad + i * dx;
+        double phi_rad = phi_1_rad + i * dx_rad;
         sum_s += 1.0 / physics_czybor_angular_speed_rad_per_s(planet_id, center_id, phi_rad);
     }
-    return sum_s * dx;
+    return sum_s * dx_rad;
 }
 
-struct vector_3d physics_tangential_speed(vector_3d_t w, vector_3d_t r)
+double physics_optimized_orbital_period_s(physics_body_id_t planet_id, physics_body_id_t center_id,
+    double phi_1_rad, double phi_2_rad, double threshold_s)
 {
-    return vector_cross(w, r);
+    double last_period_s = 0.0;
+    bool break_loop = false;
+
+    for (uint32_t i = 0; i < 10; ++i)
+    {
+        uint32_t step_count = (uint32_t) pow(10.0, (double) i);
+        double period_s = physics_orbital_period_s(planet_id, center_id, phi_1_rad, phi_2_rad, step_count);
+
+        break_loop = fabs(period_s - last_period_s) < threshold_s;
+        last_period_s = period_s;
+    
+        if (break_loop)
+        {
+            string_t message = {0};
+            sprintf(message, "orbital period: %s/%s %f s in 10^%d steps", physics_body_name(center_id),
+                physics_body_name(planet_id), last_period_s, i);
+            logging_log_message(message, true);
+            break;
+        }
+    }
+
+    return last_period_s;
 }
 
-struct vector_3d physics_linear_motion(vector_3d_t v, double t_s)
+double physics_full_orbital_period_days(physics_body_id_t planet_id, physics_body_id_t center_id)
 {
-    return vector_multiply_scalar(v, t_s);
-}
-
-struct vector_3d physics_linear_angle(vector_3d_t w, double t_s)
-{
-    return vector_multiply_scalar(w, t_s);
+    return physics_optimized_orbital_period_s(planet_id, center_id, 0.0, 2.0 * physics_pi(), 86.4) / physics_seconds_per_day();
 }
 
 struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
