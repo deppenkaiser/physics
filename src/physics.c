@@ -343,7 +343,6 @@ double physics_optimized_orbital_period_s(physics_body_id_t planet_id, physics_b
 {
     double last_period_s = 0.0;
     double period_s = 0.0;
-    bool break_loop = false;
     uint32_t i = 0;
 
     while (true)
