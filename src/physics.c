@@ -339,35 +339,38 @@ double physics_orbital_period_s(physics_body_id_t planet_id, physics_body_id_t c
 }
 
 double physics_optimized_orbital_period_s(physics_body_id_t planet_id, physics_body_id_t center_id,
-    double phi_1_rad, double phi_2_rad, double threshold_s)
+    double phi_1_rad, double phi_2_rad)
 {
     double last_period_s = 0.0;
+    double period_s = 0.0;
     bool break_loop = false;
+    uint32_t i = 0;
 
-    for (uint32_t i = 0; i < 10; ++i)
+    while (true)
     {
         uint32_t step_count = (uint32_t) pow(10.0, (double) i);
-        double period_s = physics_orbital_period_s(planet_id, center_id, phi_1_rad, phi_2_rad, step_count);
-
-        break_loop = fabs(period_s - last_period_s) < threshold_s;
-        last_period_s = period_s;
+        
+        period_s = physics_orbital_period_s(planet_id, center_id, phi_1_rad, phi_2_rad, step_count);
     
-        if (break_loop)
+        if (fabs(period_s - last_period_s) < (period_s * 0.00001))
         {
             string_t message = {0};
-            sprintf(message, "orbital period: %s/%s %f s in 10^%d steps", physics_body_name(center_id),
-                physics_body_name(planet_id), last_period_s, i);
+            sprintf(message, "orbital period: %s/%s %f s in 10^%d steps; iteration stability: %f %%", physics_body_name(center_id),
+                physics_body_name(planet_id), last_period_s, i, last_period_s / period_s * 100.0);
             logging_log_message(message, true);
             break;
         }
+
+        last_period_s = period_s;
+        ++i;
     }
 
-    return last_period_s;
+    return period_s;
 }
 
 double physics_full_orbital_period_days(physics_body_id_t planet_id, physics_body_id_t center_id)
 {
-    return physics_optimized_orbital_period_s(planet_id, center_id, 0.0, 2.0 * physics_pi(), 86.4) / physics_seconds_per_day();
+    return physics_optimized_orbital_period_s(planet_id, center_id, 0.0, 2.0 * physics_pi()) / physics_seconds_per_day();
 }
 
 struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
