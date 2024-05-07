@@ -345,7 +345,7 @@ double physics_optimized_orbital_period_s(physics_body_id_t planet_id, physics_b
     double period_s = 0.0;
     uint32_t i = 0;
 
-    while (true)
+    while (phi_2_rad > phi_1_rad)
     {
         uint32_t step_count = (uint32_t) pow(10.0, (double) i);
         
@@ -354,8 +354,8 @@ double physics_optimized_orbital_period_s(physics_body_id_t planet_id, physics_b
         if (fabs(period_s - last_period_s) < (period_s * 0.00001))
         {
             string_t message = {0};
-            sprintf(message, "orbital period: %s/%s %f s in 10^%d steps; iteration stability: %f %%", physics_body_name(center_id),
-                physics_body_name(planet_id), last_period_s, i, last_period_s / period_s * 100.0);
+            sprintf(message, "orbital period: %s/%s %f s in 10^%d steps; iteration instability: %f %%", physics_body_name(center_id),
+                physics_body_name(planet_id), last_period_s, i, fabs(100.0 - last_period_s / period_s * 100.0));
             logging_log_message(message, true);
             break;
         }
