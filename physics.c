@@ -1,5 +1,5 @@
-#include "physics/physics.h"
-#include <vector/vector.h>
+#include "physics.h"
+
 #include <logging/logging.h>
 #include <string/string.h>
 #include <math.h>
