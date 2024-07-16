@@ -372,6 +372,11 @@ double physics_full_orbital_period_days(physics_body_id_t planet_id, physics_bod
     return physics_optimized_orbital_period_s(planet_id, center_id, 0.0, 2.0 * physics_pi()) / physics_seconds_per_day();
 }
 
+double physics_rayleigh_criteria_deg(double wavelength_light_m, double objective_aperture_m)
+{
+    return physics_rad_to_deg(asin(1.22 * wavelength_light_m / objective_aperture_m));
+}
+
 struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
 {
     double e = physics_body_eccentricity(id);
