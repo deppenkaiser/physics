@@ -377,6 +377,11 @@ double physics_rayleigh_criteria_deg(double wavelength_light_m, double objective
     return physics_rad_to_deg(asin(1.22 * wavelength_light_m / objective_aperture_m));
 }
 
+double physics_image_sensor_object_size_m(double object_size_deg, double focal_length_m)
+{
+    return 2.0 * focal_length_m * tan(physics_deg_to_rad(object_size_deg) / 2.0);
+}
+
 struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
 {
     double e = physics_body_eccentricity(id);
