@@ -1,5 +1,5 @@
-#include "physics/physics.h"
-#include <vector/vector.h>
+#include "physics.h"
+
 #include <logging/logging.h>
 #include <string/string.h>
 #include <math.h>
@@ -370,6 +370,21 @@ double physics_optimized_orbital_period_s(physics_body_id_t planet_id, physics_b
 double physics_full_orbital_period_days(physics_body_id_t planet_id, physics_body_id_t center_id)
 {
     return physics_optimized_orbital_period_s(planet_id, center_id, 0.0, 2.0 * physics_pi()) / physics_seconds_per_day();
+}
+
+double physics_rayleigh_criteria_deg(double wavelength_light_m, double objective_aperture_m)
+{
+    return physics_rad_to_deg(asin(1.22 * wavelength_light_m / objective_aperture_m));
+}
+
+double physics_image_sensor_object_size_m(double object_size_deg, double focal_length_m)
+{
+    return 2.0 * focal_length_m * tan(physics_deg_to_rad(object_size_deg) / 2.0);
+}
+
+double physics_needed_image_sensor_pixel_size_m(double wavelength_light_m, double objective_aperture_m, double focal_length_m)
+{
+    return physics_image_sensor_object_size_m(physics_rayleigh_criteria_deg(wavelength_light_m, objective_aperture_m), focal_length_m) / 2.0;
 }
 
 struct vector_3d physics_kepler_r_AU(physics_body_id_t id, double angle_rad)
