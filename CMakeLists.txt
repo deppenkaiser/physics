@@ -18,3 +18,7 @@ target_include_directories(physics PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/../logging
     ${CMAKE_CURRENT_LIST_DIR}/../vector
 )
+
+target_link_libraries(physics
+    vector
+)
