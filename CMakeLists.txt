@@ -13,7 +13,7 @@ target_sources(physics PRIVATE
     physics.c
 )
 
-target_include_directories(physics PRIVATE
+target_include_directories(physics PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/../string
     ${CMAKE_CURRENT_LIST_DIR}/../logging
     ${CMAKE_CURRENT_LIST_DIR}/../vector
