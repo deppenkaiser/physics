@@ -62,3 +62,18 @@ double physics_specific_angular_momentum(double mass_center_kg, double a_m, doub
 {
     return sqrt(PHYSICS_G * mass_center_kg * a_m * (1.0 - pow(eccentricity, 2.0)));
 }
+
+double physics_angular_speed(double angular_moment, double mass_center_kg, double eccentricity, double phi_rad)
+{
+    double sin_phi = sin(phi_rad);
+    double cos_phi = cos(phi_rad);
+    double e = 1.0 + eccentricity * cos_phi;
+    double factor = 1.0 + pow(eccentricity, 2.0) / 2.0 + eccentricity * phi_rad * sin_phi;
+    return pow(angular_moment, 3.0) / (pow(PHYSICS_G, 2.0) * pow(mass_center_kg, 2.0) * pow(e, 2.0)) +
+        3.0 * angular_moment / (PHYSICS_C_SQUARE * e) * factor;
+}
+
+double physics_kepler_radius(double a_m, double eccentricity, double phi_rad)
+{
+    return a_m * (1 - pow(eccentricity, 2.0)) / (1.0 + eccentricity * cos(phi_rad));
+}

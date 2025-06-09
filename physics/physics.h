@@ -102,3 +102,5 @@ double physics_rayleigh_criteria_deg(double wavelength_light_m, double objective
 double physics_image_sensor_object_size_m(double object_size_deg, double focal_length_m);
 double physics_needed_image_sensor_pixel_size_m(double wavelength_light_m, double objective_aperture_m, double focal_length_m);
 double physics_specific_angular_momentum(double mass_center_kg, double a_m, double eccentricity);
+double physics_angular_speed(double angular_moment, double mass_center_kg, double eccentricity, double phi_rad);
+double physics_kepler_radius(double a_m, double eccentricity, double phi_rad);
