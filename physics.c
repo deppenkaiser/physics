@@ -80,41 +80,22 @@ double physics_kepler_radius(double a_m, double eccentricity, double phi_rad)
 
 struct vector_3d compute_weber_force(const celestial_body_t body1, const celestial_body_t body2) 
 {
+    struct vector_3d force = {0};
+
     // 1. Relativvektoren berechnen
-    struct vector_3d r_vec = vector_sub(&body2->position, &body1->position);
+    struct vector_3d r_rel = vector_sub(&body2->position, &body1->position);
     struct vector_3d v_rel = vector_sub(&body2->velocity, &body1->velocity);
     struct vector_3d a_rel = vector_sub(&body2->acceleration, &body1->acceleration);
 
     // 2. Abstand und Einheitsvektor
-    double r = vector_norm(&r_vec);
-    struct vector_3d r_unit = vector_divide_scalar(&r_vec, r);
+    double r = vector_norm(&r_rel);
+    struct vector_3d r_rel_unit = vector_divide_scalar(&r_rel, r);
 
-    // 3. Radialkomponenten von v und a
-    double v_r = vector_dot(&v_rel, &r_unit);
-    
-    // Tangentialgeschwindigkeit (v_tan = v - (v·r)r)
-    struct vector_3d v_tan =
-    {
-        .x = v_rel.x - v_r * r_unit.x,
-        .y = v_rel.y - v_r * r_unit.y,
-        .z = v_rel.z - v_r * r_unit.z
-    };
-    double v_tan_sq = vector_dot(&v_tan, &v_tan);
-    
-    // Radialbeschleunigung (a_r = a·r + v_tan²/r)
-    double a_r = vector_dot(&a_rel, &r_unit) + v_tan_sq / r;
-
-    // 4. Weber-Kraft berechnen (β = 0.5 für Gravitation)
-    double F_magnitude = -(PHYSICS_G * body1->mass * body2->mass) / (r * r);
-    double weber_factor = 1.0 - (v_r*v_r)/(PHYSICS_C_SQUARE) + (r*a_r)/(2.0 * PHYSICS_C_SQUARE);
-
-    // 5. Kraftvektor
-    struct vector_3d force =
-    {
-        .x = F_magnitude * weber_factor * r_unit.x,
-        .y = F_magnitude * weber_factor * r_unit.y,
-        .z = F_magnitude * weber_factor * r_unit.z
-    };
+    // 3. Weber-Kraft
+    double v_square = vector_dot(&v_rel, &v_rel);
+    double ra = vector_dot(&r_rel, &a_rel);
+    force = vector_multiply_scalar(&r_rel_unit, -PHYSICS_G * body1->mass * body2->mass / pow(r, 2.0) *
+        (1.0 - v_square / PHYSICS_C_SQUARE + ra / (2.0 * PHYSICS_C_SQUARE)));
 
     return force;
 }
