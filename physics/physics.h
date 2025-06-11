@@ -91,6 +91,15 @@
 #define PHYSICS_URANUS_W 98.99933405
 #define PHYSICS_NEPTUNE_W 276.33621852
 
+typedef struct celestial_body
+{
+    struct vector_3d position;
+    struct vector_3d velocity;
+    struct vector_3d acceleration;
+    double mass;
+    const char* name;
+} *celestial_body_t;
+
 double physics_pi();
 double physics_frac(double x);
 double physics_modulo(double a, double b);
@@ -104,3 +113,4 @@ double physics_needed_image_sensor_pixel_size_m(double wavelength_light_m, doubl
 double physics_specific_angular_momentum(double mass_center_kg, double a_m, double eccentricity);
 double physics_angular_speed(double angular_moment, double mass_center_kg, double eccentricity, double phi_rad);
 double physics_kepler_radius(double a_m, double eccentricity, double phi_rad);
+struct vector_3d compute_weber_force(const celestial_body_t body1, const celestial_body_t body2);
