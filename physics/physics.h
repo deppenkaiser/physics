@@ -112,9 +112,11 @@ double physics_barycenter_AU(cd distance_AU, cd mass_center_kg, cd mass_satellit
 double physics_rayleigh_criteria_deg(cd wavelength_light_m, cd objective_aperture_m);
 double physics_image_sensor_object_size_m(cd object_size_deg, cd focal_length_m);
 double physics_needed_image_sensor_pixel_size_m(cd wavelength_light_m, cd objective_aperture_m, cd focal_length_m);
-double physics_specific_angular_momentum(cd mass_center_kg, cd a_m, cd eccentricity);
-double physics_angular_speed(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad);
 double physics_kepler_radius(cd a_m, cd eccentricity, cd phi_rad);
-struct vector_3d compute_weber_force(const celestial_body_t body1, const celestial_body_t body2);
 double physics_kinetic_energy(cd mass_kg, const vector_3d_t v);
 double physics_potential_energy(cd mass_1_kg, cd mass_2_kg, const vector_3d_t r);
+
+struct vector_3d physics_weber_force(const celestial_body_t body1, const celestial_body_t body2);
+double physics_weber_specific_angular_momentum(cd mass_center_kg, cd a_m, cd eccentricity);
+double physics_weber_angular_speed(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad);
+double physics_weber_radius(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad);

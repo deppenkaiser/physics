@@ -58,27 +58,22 @@ double physics_needed_image_sensor_pixel_size_m(cd wavelength_light_m, cd object
     return physics_image_sensor_object_size_m(physics_rayleigh_criteria_deg(wavelength_light_m, objective_aperture_m), focal_length_m) / 2.0;
 }
 
-double physics_specific_angular_momentum(cd mass_center_kg, cd a_m, cd eccentricity)
-{
-    return sqrt(PHYSICS_G * mass_center_kg * a_m * (1.0 - pow(eccentricity, 2.0)));
-}
-
-double physics_angular_speed(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad)
-{
-    double sin_phi = sin(phi_rad);
-    double cos_phi = cos(phi_rad);
-    double e = 1.0 + eccentricity * cos_phi;
-    double factor = 1.0 + pow(eccentricity, 2.0) / 2.0 + eccentricity * phi_rad * sin_phi;
-    return pow(angular_moment, 3.0) / (pow(PHYSICS_G, 2.0) * pow(mass_center_kg, 2.0) * pow(e, 2.0)) +
-        3.0 * angular_moment / (PHYSICS_C_SQUARE * e) * factor;
-}
-
 double physics_kepler_radius(cd a_m, cd eccentricity, cd phi_rad)
 {
     return a_m * (1 - pow(eccentricity, 2.0)) / (1.0 + eccentricity * cos(phi_rad));
 }
 
-struct vector_3d compute_weber_force(const celestial_body_t body1, const celestial_body_t body2)
+double physics_kinetic_energy(cd mass_kg, const vector_3d_t v)
+{
+    return 0.5 * mass_kg * vector_dot(v, v);
+}
+
+double physics_potential_energy(cd mass_1_kg, cd mass_2_kg, const vector_3d_t r)
+{
+    return -PHYSICS_G * mass_1_kg * mass_2_kg / vector_norm(r);
+}
+
+struct vector_3d physics_weber_force(const celestial_body_t body1, const celestial_body_t body2)
 {
     // 1. Relativvektoren berechnen
     struct vector_3d r_rel = vector_sub(&body2->position, &body1->position);
@@ -97,12 +92,27 @@ struct vector_3d compute_weber_force(const celestial_body_t body1, const celesti
         (1.0 - v_square / PHYSICS_C_SQUARE + ra / (2.0 * PHYSICS_C_SQUARE)));
 }
 
-double physics_kinetic_energy(cd mass_kg, const vector_3d_t v)
+double physics_weber_specific_angular_momentum(cd mass_center_kg, cd a_m, cd eccentricity)
 {
-    return 0.5 * mass_kg * vector_dot(v, v);
+    return sqrt(PHYSICS_G * mass_center_kg * a_m * (1.0 - pow(eccentricity, 2.0)));
 }
 
-double physics_potential_energy(cd mass_1_kg, cd mass_2_kg, const vector_3d_t r)
+double physics_weber_angular_speed(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad)
 {
-    return -PHYSICS_G * mass_1_kg * mass_2_kg / vector_norm(r);
+    double sin_phi = sin(phi_rad);
+    double cos_phi = cos(phi_rad);
+    double e = 1.0 + eccentricity * cos_phi;
+    double factor = 1.0 + pow(eccentricity, 2.0) / 2.0 + eccentricity * phi_rad * sin_phi;
+    return pow(angular_moment, 3.0) / (pow(PHYSICS_G, 2.0) * pow(mass_center_kg, 2.0) * pow(e, 2.0)) +
+        3.0 * angular_moment / (PHYSICS_C_SQUARE * e) * factor;
+}
+
+double physics_weber_radius(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad)
+{
+    double gm = PHYSICS_G * mass_center_kg;
+    double e_square = pow(eccentricity, 2.0);
+    double h_square = pow(angular_moment, 2.0);
+    double factor = 3.0 * pow(PHYSICS_G, 3.0) * pow(mass_center_kg, 3.0) / (PHYSICS_C_SQUARE * pow(h_square, 2.0));
+    return h_square / (gm + gm * eccentricity * cos(phi_rad) + factor * (1.0 + e_square) +
+        factor * eccentricity * phi_rad * sin(phi_rad) - factor / 6.0 * e_square * cos(2.0 * phi_rad));
 }
