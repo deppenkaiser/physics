@@ -78,10 +78,8 @@ double physics_kepler_radius(double a_m, double eccentricity, double phi_rad)
     return a_m * (1 - pow(eccentricity, 2.0)) / (1.0 + eccentricity * cos(phi_rad));
 }
 
-struct vector_3d compute_weber_force(const celestial_body_t body1, const celestial_body_t body2) 
+struct vector_3d compute_weber_force(const celestial_body_t body1, const celestial_body_t body2)
 {
-    struct vector_3d force = {0};
-
     // 1. Relativvektoren berechnen
     struct vector_3d r_rel = vector_sub(&body2->position, &body1->position);
     struct vector_3d v_rel = vector_sub(&body2->velocity, &body1->velocity);
@@ -94,8 +92,7 @@ struct vector_3d compute_weber_force(const celestial_body_t body1, const celesti
     // 3. Weber-Kraft
     double v_square = vector_dot(&v_rel, &v_rel);
     double ra = vector_dot(&r_rel, &a_rel);
-    force = vector_multiply_scalar(&r_rel_unit, -PHYSICS_G * body1->mass * body2->mass / pow(r, 2.0) *
+    
+    return vector_multiply_scalar(&r_rel_unit, -PHYSICS_G * body1->mass * body2->mass / pow(r, 2.0) *
         (1.0 - v_square / PHYSICS_C_SQUARE + ra / (2.0 * PHYSICS_C_SQUARE)));
-
-    return force;
 }
