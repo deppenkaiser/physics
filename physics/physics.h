@@ -117,3 +117,4 @@ double physics_angular_speed(cd angular_moment, cd mass_center_kg, cd eccentrici
 double physics_kepler_radius(cd a_m, cd eccentricity, cd phi_rad);
 struct vector_3d compute_weber_force(const celestial_body_t body1, const celestial_body_t body2);
 double physics_kinetic_energy(cd mass_kg, const vector_3d_t v);
+double physics_potential_energy(cd mass_1_kg, cd mass_2_kg, const vector_3d_t r);

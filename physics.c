@@ -101,3 +101,8 @@ double physics_kinetic_energy(cd mass_kg, const vector_3d_t v)
 {
     return 0.5 * mass_kg * vector_dot(v, v);
 }
+
+double physics_potential_energy(cd mass_1_kg, cd mass_2_kg, const vector_3d_t r)
+{
+    return -PHYSICS_G * mass_1_kg * mass_2_kg / vector_norm(r);
+}
