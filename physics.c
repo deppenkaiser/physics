@@ -68,9 +68,9 @@ double physics_kinetic_energy(cd mass_kg, const vector_3d_t v)
     return 0.5 * mass_kg * vector_dot(v, v);
 }
 
-double physics_potential_energy(cd mass_1_kg, cd mass_2_kg, const vector_3d_t r)
+double physics_weber_potential_energy(cd mass_1_kg, cd mass_2_kg, const vector_3d_t r, const vector_3d_t v)
 {
-    return -PHYSICS_G * mass_1_kg * mass_2_kg / vector_norm(r);
+    return -PHYSICS_G * mass_1_kg * mass_2_kg / vector_norm(r) * (1.0 - vector_dot(v, v) / (2.0 * PHYSICS_C_SQUARE));
 }
 
 struct vector_3d physics_weber_force(const celestial_body_t body1, const celestial_body_t body2)
