@@ -96,7 +96,9 @@ typedef struct celestial_body
     struct vector_3d position;
     struct vector_3d velocity;
     struct vector_3d acceleration;
-    double mass;
+    double mass_kg;
+    double e;
+    double a_m;
     const char* name;
 } *celestial_body_t;
 
@@ -114,11 +116,12 @@ double physics_image_sensor_object_size_m(cd object_size_deg, cd focal_length_m)
 double physics_needed_image_sensor_pixel_size_m(cd wavelength_light_m, cd objective_aperture_m, cd focal_length_m);
 double physics_kepler_radius(cd a_m, cd eccentricity, cd phi_rad);
 double physics_kinetic_energy(cd mass_kg, const vector_3d_t v);
+double physics_kinetic_energy_body(const celestial_body_t body);
 
-double physics_weber_potential_energy(cd mass_1_kg, cd mass_2_kg, const vector_3d_t r, const vector_3d_t v);
+double physics_weber_potential_energy(const celestial_body_t body, cd mass_center_kg, cd phi_rad);
 struct vector_3d physics_weber_force(const celestial_body_t body1, const celestial_body_t body2);
-double physics_weber_specific_angular_momentum(cd mass_center_kg, cd a_m, cd eccentricity);
+double physics_weber_specific_angular_momentum(const celestial_body_t body, cd mass_center_kg);
 double physics_weber_angular_speed(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad);
-struct vector_3d physics_weber_position(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad);
-struct vector_3d physics_weber_velocity(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad);
-struct vector_3d physics_weber_acceleration(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad);
+struct vector_3d physics_weber_position(const celestial_body_t body, cd mass_center_kg, cd phi_rad);
+struct vector_3d physics_weber_velocity(const celestial_body_t body, cd mass_center_kg, cd phi_rad);
+struct vector_3d physics_weber_acceleration(const celestial_body_t body, cd mass_center_kg, cd phi_rad);
