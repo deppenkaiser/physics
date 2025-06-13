@@ -121,3 +121,4 @@ double physics_weber_specific_angular_momentum(cd mass_center_kg, cd a_m, cd ecc
 double physics_weber_angular_speed(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad);
 struct vector_3d physics_weber_position(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad);
 struct vector_3d physics_weber_velocity(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad);
+struct vector_3d physics_weber_acceleration(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad);
