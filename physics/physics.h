@@ -12,7 +12,7 @@
 
 // https://www.imcce.fr/
 
-#define PHYSICS_SUN_MASS 1.9884e30
+#define PHYSICS_SUN_MASS 1.98841e30
 #define PHYSICS_MERCURY_MASS 3.301e23
 #define PHYSICS_VENUS_MASS 4.8673e24
 #define PHYSICS_EARTH_MASS 5.9722e24
@@ -119,4 +119,5 @@ double physics_potential_energy(cd mass_1_kg, cd mass_2_kg, const vector_3d_t r)
 struct vector_3d physics_weber_force(const celestial_body_t body1, const celestial_body_t body2);
 double physics_weber_specific_angular_momentum(cd mass_center_kg, cd a_m, cd eccentricity);
 double physics_weber_angular_speed(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad);
-double physics_weber_radius(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad);
+struct vector_3d physics_weber_position(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad);
+struct vector_3d physics_weber_velocity(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad);

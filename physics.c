@@ -107,12 +107,57 @@ double physics_weber_angular_speed(cd angular_moment, cd mass_center_kg, cd ecce
         3.0 * angular_moment / (PHYSICS_C_SQUARE * e) * factor;
 }
 
-double physics_weber_radius(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad)
+double _physics_weber_k(cd mass_center_kg, cd a_m, cd eccentricity)
 {
-    double gm = PHYSICS_G * mass_center_kg;
-    double e_square = pow(eccentricity, 2.0);
-    double h_square = pow(angular_moment, 2.0);
-    double factor = 3.0 * pow(PHYSICS_G, 3.0) * pow(mass_center_kg, 3.0) / (PHYSICS_C_SQUARE * pow(h_square, 2.0));
-    return h_square / (gm + gm * eccentricity * cos(phi_rad) + factor * (1.0 + e_square) +
-        factor * eccentricity * phi_rad * sin(phi_rad) - factor / 6.0 * e_square * cos(2.0 * phi_rad));
+    double A = 6.0 * PHYSICS_G * mass_center_kg;
+    double B = PHYSICS_C_SQUARE * a_m * (1.0 - pow(eccentricity, 2.0));
+    double C = sqrt(1.0 - A / B);
+    return C;
+}
+
+struct vector_3d physics_weber_position(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad)
+{
+    struct vector_3d position = (struct vector_3d)
+    {
+        .x = cos(phi_rad),
+        .y = sin(phi_rad),
+        .z = 0.0
+    };
+
+    double h = physics_weber_specific_angular_momentum(mass_center_kg, a_m, eccentricity);
+    double K = _physics_weber_k(mass_center_kg, a_m, eccentricity);
+    double A = a_m * (1.0 - pow(eccentricity, 2.0)) / (1.0 + eccentricity * cos(K * phi_rad));
+    double B = 3.0 * pow(PHYSICS_G, 2.0) * pow(mass_center_kg, 2.0) / (PHYSICS_C_SQUARE * pow(h, 4.0));
+    double C = A * (1.0 + B * (1.0 + pow(eccentricity, 2.0) / 2.0 + eccentricity * phi_rad * sin(K * phi_rad)));
+    
+    return vector_multiply_scalar(&position, C);
+}
+
+struct vector_3d physics_weber_velocity(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad)
+{
+    struct vector_3d velocity_1 = (struct vector_3d)
+    {
+        .x = cos(phi_rad),
+        .y = sin(phi_rad),
+        .z = 0.0
+    };
+
+    struct vector_3d velocity_2 = (struct vector_3d)
+    {
+        .x = -sin(phi_rad),
+        .y = cos(phi_rad),
+        .z = 0.0
+    };
+
+    double K = _physics_weber_k(mass_center_kg, a_m, eccentricity);
+    double A = sqrt(PHYSICS_G * mass_center_kg / (a_m * (1 - pow(eccentricity, 2.0))));
+    double B = eccentricity * K * sin(K * phi_rad) / (1.0 + eccentricity * cos(K * phi_rad));
+    double C = 1.0 + eccentricity * cos(K * phi_rad);
+
+    velocity_1 = vector_multiply_scalar(&velocity_1, B);
+    velocity_1 = vector_multiply_scalar(&velocity_1, A);
+    velocity_2 = vector_multiply_scalar(&velocity_2, C);
+    velocity_2 = vector_multiply_scalar(&velocity_2, A);
+    
+    return vector_add(&velocity_1, &velocity_2);
 }
