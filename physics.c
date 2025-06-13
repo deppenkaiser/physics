@@ -154,10 +154,14 @@ struct vector_3d physics_weber_velocity(cd mass_center_kg, cd a_m, cd eccentrici
     double B = eccentricity * K * sin(K * phi_rad) / (1.0 + eccentricity * cos(K * phi_rad));
     double C = 1.0 + eccentricity * cos(K * phi_rad);
 
-    velocity_1 = vector_multiply_scalar(&velocity_1, B);
-    velocity_1 = vector_multiply_scalar(&velocity_1, A);
-    velocity_2 = vector_multiply_scalar(&velocity_2, C);
-    velocity_2 = vector_multiply_scalar(&velocity_2, A);
+    velocity_1 = vector_multiply_scalar(&velocity_1, A * B);
+    velocity_2 = vector_multiply_scalar(&velocity_2, A * C);
     
     return vector_add(&velocity_1, &velocity_2);
+}
+
+struct vector_3d physics_weber_acceleration(cd mass_center_kg, cd a_m, cd eccentricity, cd phi_rad)
+{
+    struct vector_3d acceleration = {0};
+    return acceleration;
 }
