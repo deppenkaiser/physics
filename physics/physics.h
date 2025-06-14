@@ -93,9 +93,9 @@
 
 typedef struct celestial_body
 {
-    struct vector_3d position;
-    struct vector_3d velocity;
-    struct vector_3d acceleration;
+    struct vector_3d r_m;
+    struct vector_3d v_m_s;
+    struct vector_3d w_rad_s;
     double mass_kg;
     double e;
     double a_m;
@@ -119,9 +119,8 @@ double physics_kinetic_energy(cd mass_kg, const vector_3d_t v);
 double physics_kinetic_energy_body(const celestial_body_t body);
 
 double physics_weber_potential_energy(const celestial_body_t body, cd mass_center_kg, cd phi_rad);
-struct vector_3d physics_weber_force(const celestial_body_t body1, const celestial_body_t body2);
 double physics_weber_specific_angular_momentum(const celestial_body_t body, cd mass_center_kg);
-double physics_weber_angular_speed(cd angular_moment, cd mass_center_kg, cd eccentricity, cd phi_rad);
+struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cd mass_center_kg, cd phi_rad);
 struct vector_3d physics_weber_position(const celestial_body_t body, cd mass_center_kg, cd phi_rad);
 struct vector_3d physics_weber_velocity(const celestial_body_t body, cd mass_center_kg, cd phi_rad);
 struct vector_3d physics_weber_acceleration(const celestial_body_t body, cd mass_center_kg, cd phi_rad);
