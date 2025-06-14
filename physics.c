@@ -98,12 +98,8 @@ struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cd mas
 {
     struct vector_3d w = {0};
     double h = physics_weber_specific_angular_momentum(body, mass_center_kg);
-    double sin_phi = sin(phi_rad);
-    double cos_phi = cos(phi_rad);
-    double e = 1.0 + body->e * cos_phi;
-    double factor = 1.0 + pow(body->e, 2.0) / 2.0 + body->e * phi_rad * sin_phi;
-    w.z = pow(h, 3.0) / (pow(PHYSICS_G, 2.0) * pow(mass_center_kg, 2.0) * pow(e, 2.0)) +
-        3.0 * h / (PHYSICS_C_SQUARE * e) * factor;
+    struct vector_3d r = physics_weber_position(body, mass_center_kg, phi_rad);
+    w.z = h / vector_dot(&r, &r);
     return w;
 }
 
