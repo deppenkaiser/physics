@@ -103,6 +103,14 @@ struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cd mas
     return w;
 }
 
+struct vector_3d physics_weber_angular_speed_perturbed(const celestial_body_t body, const celestial_body_t body_i)
+{
+    struct vector_3d A = vector_cross(&body->r_m, &body_i->vp_m_s);
+    struct vector_3d B = vector_cross(&body_i->rp_m, &body->v_m_s);
+    struct vector_3d w = vector_add(&A, &B);
+    return vector_divide_scalar(&w, vector_dot(&body->r_m, &body->r_m));
+}
+
 struct vector_3d physics_weber_position(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
 {
     struct vector_3d position = (struct vector_3d)
@@ -119,6 +127,13 @@ struct vector_3d physics_weber_position(const celestial_body_t body, cd mass_cen
     double C = A * (1.0 + B * (1.0 + pow(body->e, 2.0) / 2.0 + body->e * phi_rad * sin(K * phi_rad)));
     
     return vector_multiply_scalar(&position, C);
+}
+
+struct vector_3d physics_weber_position_perturbed(const celestial_body_t body, const celestial_body_t body_i, cd mass_center_kg)
+{
+    struct vector_3d r = vector_sub(&body->r_m, &body_i->r_m);
+    double A = body_i->mass_kg / mass_center_kg * pow(body_i->a_m, 2.0) / vector_dot(&r, &r);
+    return vector_multiply_scalar(&r, A);
 }
 
 struct vector_3d physics_weber_velocity(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
@@ -148,8 +163,18 @@ struct vector_3d physics_weber_velocity(const celestial_body_t body, cd mass_cen
     return vector_add(&velocity_1, &velocity_2);
 }
 
-struct vector_3d physics_weber_acceleration(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
+struct vector_3d physics_weber_velocity_perturbed(const celestial_body_t body, const celestial_body_t body_i, cd mass_center_kg)
 {
-    struct vector_3d acceleration = {0};
-    return acceleration;
+    struct vector_3d vr = vector_sub(&body->r_m, &body_i->r_m);
+    struct vector_3d z = (struct vector_3d)
+    {
+        .x = 0.0,
+        .y = 0.0,
+        .z = 1.0
+    };
+    vr = vector_cross(&vr, &z);
+    double r = vector_norm(&vr);
+    double h = physics_weber_specific_angular_momentum(body, mass_center_kg);
+    double A = PHYSICS_G * body_i->mass_kg / (h * pow(r, 3.0));
+    return vector_multiply_scalar(&vr, A);
 }
