@@ -103,10 +103,12 @@ struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cd mas
     return w;
 }
 
-struct vector_3d physics_weber_angular_speed_perturbed(const celestial_body_t body, const celestial_body_t body_i)
+struct vector_3d physics_weber_angular_speed_perturbed(const celestial_body_t body, const celestial_body_t body_i, cd mass_center_kg)
 {
-    struct vector_3d A = vector_cross(&body->r_m, &body_i->vp_m_s);
-    struct vector_3d B = vector_cross(&body_i->rp_m, &body->v_m_s);
+    struct vector_3d dr = physics_weber_position_perturbed(body, body_i, mass_center_kg);
+    struct vector_3d dv = physics_weber_velocity_perturbed(body, body_i, mass_center_kg);
+    struct vector_3d A = vector_cross(&body->r_m, &dv);
+    struct vector_3d B = vector_cross(&dr, &body->v_m_s);
     struct vector_3d w = vector_add(&A, &B);
     return vector_divide_scalar(&w, vector_dot(&body->r_m, &body->r_m));
 }
