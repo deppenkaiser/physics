@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <float.h>
 
+double _physics_weber_k(const celestial_body_t body, cd mass_center_kg);
+
 double physics_frac(cd x)
 {
     return x - floor(x);
@@ -73,20 +75,20 @@ double physics_kinetic_energy_body(const celestial_body_t body)
     return physics_kinetic_energy(body->mass_kg, &body->v_m_s);
 }
 
-double _physics_weber_k(const celestial_body_t body, cd mass_center_kg)
-{
-    double A = 6.0 * PHYSICS_G * mass_center_kg;
-    double B = PHYSICS_C_SQUARE * body->a_m * (1.0 - pow(body->e, 2.0));
-    double C = sqrt(1.0 - A / B);
-    return C;
-}
-
 double physics_weber_potential_energy(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
 {
     double h = physics_weber_specific_angular_momentum(body, mass_center_kg);
     double K = _physics_weber_k(body, mass_center_kg);
     double v_radial = h * body->e * K * sin(K * phi_rad) / (1.0 - pow(body->e, 2.0));
     return -PHYSICS_G * mass_center_kg * body->mass_kg / vector_norm(&body->r_m) * (1.0 - pow(v_radial, 2.0) / (2.0 * PHYSICS_C_SQUARE));
+}
+
+double _physics_weber_k(const celestial_body_t body, cd mass_center_kg)
+{
+    double A = 6.0 * PHYSICS_G * mass_center_kg;
+    double B = PHYSICS_C_SQUARE * body->a_m * (1.0 - pow(body->e, 2.0));
+    double C = sqrt(1.0 - A / B);
+    return C;
 }
 
 double physics_weber_specific_angular_momentum(const celestial_body_t body, cd mass_center_kg)
