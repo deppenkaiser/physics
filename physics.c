@@ -98,9 +98,18 @@ double physics_weber_specific_angular_momentum(const celestial_body_t body, cd m
 
 double physics_weber_periodtime(const celestial_body_t body, cd mass_center_kg)
 {
-    double A = 2.0 * physics_pi() * pow(body->a_m, 3.0 / 2.0) / sqrt(PHYSICS_G * mass_center_kg);
-    double B = 9.0 * PHYSICS_G * mass_center_kg * body->e_square / (PHYSICS_C_SQUARE * body->a_m * pow(1.0 - body->e_square, 2.0));
+    double A = 2.0 * physics_pi() * sqrt(pow(body->a_m, 3.0) / (PHYSICS_G * mass_center_kg));
+    double B = 3.0 * PHYSICS_G * mass_center_kg / (2.0 * PHYSICS_C_SQUARE * body->a_m * (1.0 - body->e_square));
     return A * (1.0 + B);
+}
+
+double physics_weber_deltaphi(const celestial_body_t body, cd mass_center_kg, cd T_step_s)
+{
+    double A = vector_norm(&body->w_rad_s) * T_step_s;
+    double h = physics_weber_specific_angular_momentum(body, mass_center_kg);
+    double r = vector_norm(&body->r_m);
+    double B = 3.0 * PHYSICS_G * mass_center_kg * h * T_step_s / (PHYSICS_C_SQUARE * pow(r, 3.0));
+    return A + B;
 }
 
 struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
