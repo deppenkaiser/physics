@@ -125,6 +125,7 @@ typedef struct celestial_body
     struct vector_3d w_rad_s;
     double mass_kg;
     double e;
+    double e_square;
     double a_m;
     double T_s;
     const char* name;
