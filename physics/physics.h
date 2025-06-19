@@ -121,7 +121,9 @@
 typedef struct celestial_body
 {
     struct vector_3d r_m;
+    struct vector_3d r_bary_m;
     struct vector_3d v_m_s;
+    struct vector_3d v_bary_m_s;
     struct vector_3d w_rad_s;
     double mass_kg;
     double e;
