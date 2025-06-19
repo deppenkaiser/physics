@@ -133,7 +133,8 @@ struct vector_3d physics_weber_velocity(const celestial_body_t body, cd mass_cen
 
     double h = _physics_weber_specific_angular_momentum(body, mass_center_kg);
     double K = _physics_weber_k(body, mass_center_kg);
-    double r = vector_norm(&body->r_m); // Weber-Position, wurde zuvor mit phi berechnet
+    struct vector_3d vr = physics_weber_position(body, mass_center_kg, phi_rad);
+    double r = vector_norm(&vr);
     double A = h * body->e * K * sin(K * phi_rad);
     double B = h / pow(r, 2.0);
     velocity_1 = vector_multiply_scalar(&velocity_1, A);
