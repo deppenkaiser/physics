@@ -9,6 +9,7 @@
 #include <float.h>
 
 double _physics_weber_k(const celestial_body_t body, cd mass_center_kg);
+double _physics_weber_specific_angular_momentum(const celestial_body_t body, cd mass_center_kg);
 
 double physics_frac(cd x)
 {
@@ -77,10 +78,15 @@ double physics_kinetic_energy_body(const celestial_body_t body)
 
 double physics_weber_potential_energy(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
 {
-    double h = physics_weber_specific_angular_momentum(body, mass_center_kg);
+    double h = _physics_weber_specific_angular_momentum(body, mass_center_kg);
     double K = _physics_weber_k(body, mass_center_kg);
     double v_radial = h * body->e * K * sin(K * phi_rad) / (1.0 - body->e_square);
     return -PHYSICS_G * mass_center_kg * body->mass_kg / vector_norm(&body->r_m) * (1.0 - pow(v_radial, 2.0) / (2.0 * PHYSICS_C_SQUARE));
+}
+
+double _physics_weber_specific_angular_momentum(const celestial_body_t body, cd mass_center_kg)
+{
+    return sqrt(PHYSICS_G * mass_center_kg * body->a_m * (1.0 - body->e_square));
 }
 
 double _physics_weber_k(const celestial_body_t body, cd mass_center_kg)
@@ -89,46 +95,6 @@ double _physics_weber_k(const celestial_body_t body, cd mass_center_kg)
     double B = PHYSICS_C_SQUARE * body->a_m * (1.0 - body->e_square);
     double C = sqrt(1.0 - A / B);
     return C;
-}
-
-double physics_weber_specific_angular_momentum(const celestial_body_t body, cd mass_center_kg)
-{
-    return sqrt(PHYSICS_G * mass_center_kg * body->a_m * (1.0 - body->e_square));
-}
-
-double physics_weber_periodtime(const celestial_body_t body, cd mass_center_kg)
-{
-    double A = 2.0 * physics_pi() * sqrt(pow(body->a_m, 3.0) / (PHYSICS_G * mass_center_kg));
-    double B = 3.0 * PHYSICS_G * mass_center_kg / (2.0 * PHYSICS_C_SQUARE * body->a_m * (1.0 - body->e_square));
-    return A * (1.0 + B);
-}
-
-double physics_weber_deltaphi(const celestial_body_t body, cd mass_center_kg, cd T_step_s)
-{
-    double A = vector_norm(&body->w_rad_s) * T_step_s;
-    double h = physics_weber_specific_angular_momentum(body, mass_center_kg);
-    double r = vector_norm(&body->r_m);
-    double B = 3.0 * PHYSICS_G * mass_center_kg * h * T_step_s / (PHYSICS_C_SQUARE * pow(r, 3.0));
-    return A + B;
-}
-
-struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
-{
-    struct vector_3d w = {0};
-    double h = physics_weber_specific_angular_momentum(body, mass_center_kg);
-    struct vector_3d r = physics_weber_position(body, mass_center_kg, phi_rad);
-    w.z = h / vector_dot(&r, &r);
-    return w;
-}
-
-struct vector_3d physics_weber_angular_speed_perturbed(const celestial_body_t body, const celestial_body_t body_i, cd mass_center_kg)
-{
-    struct vector_3d dr = physics_weber_position_perturbed(body, body_i, mass_center_kg);
-    struct vector_3d dv = physics_weber_velocity_perturbed(body, body_i, mass_center_kg);
-    struct vector_3d A = vector_cross(&body->r_m, &dv);
-    struct vector_3d B = vector_cross(&dr, &body->v_m_s);
-    struct vector_3d w = vector_add(&A, &B);
-    return vector_divide_scalar(&w, vector_dot(&body->r_m, &body->r_m));
 }
 
 struct vector_3d physics_weber_position(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
@@ -140,20 +106,13 @@ struct vector_3d physics_weber_position(const celestial_body_t body, cd mass_cen
         .z = 0.0
     };
 
-    double h = physics_weber_specific_angular_momentum(body, mass_center_kg);
+    double h = _physics_weber_specific_angular_momentum(body, mass_center_kg);
     double K = _physics_weber_k(body, mass_center_kg);
     double A = body->a_m * (1.0 - body->e_square) / (1.0 + body->e * cos(K * phi_rad));
     double B = 3.0 * pow(PHYSICS_G, 2.0) * pow(mass_center_kg, 2.0) / (PHYSICS_C_SQUARE * pow(h, 4.0));
     double C = A * (1.0 + B * (1.0 + body->e_square / 2.0 + body->e * phi_rad * sin(K * phi_rad)));
     
     return vector_multiply_scalar(&position, C);
-}
-
-struct vector_3d physics_weber_position_perturbed(const celestial_body_t body, const celestial_body_t body_i, cd mass_center_kg)
-{
-    struct vector_3d r = vector_sub(&body->r_m, &body_i->r_m);
-    double A = body_i->mass_kg / mass_center_kg * pow(body_i->a_m, 2.0) / vector_dot(&r, &r);
-    return vector_multiply_scalar(&r, A);
 }
 
 struct vector_3d physics_weber_velocity(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
@@ -172,15 +131,57 @@ struct vector_3d physics_weber_velocity(const celestial_body_t body, cd mass_cen
         .z = 0.0
     };
 
+    double h = _physics_weber_specific_angular_momentum(body, mass_center_kg);
     double K = _physics_weber_k(body, mass_center_kg);
-    double A = sqrt(PHYSICS_G * mass_center_kg / (body->a_m * (1 - body->e_square)));
-    double B = body->e * K * sin(K * phi_rad) / (1.0 + body->e * cos(K * phi_rad));
-    double C = 1.0 + body->e * cos(K * phi_rad);
-
-    velocity_1 = vector_multiply_scalar(&velocity_1, A * B);
-    velocity_2 = vector_multiply_scalar(&velocity_2, A * C);
+    double r = vector_norm(&body->r_m); // Weber-Position, wurde zuvor mit phi berechnet
+    double A = h * body->e * K * sin(K * phi_rad);
+    double B = h / pow(r, 2.0);
+    velocity_1 = vector_multiply_scalar(&velocity_1, A);
+    velocity_2 = vector_multiply_scalar(&velocity_2, B);
     
     return vector_add(&velocity_1, &velocity_2);
+}
+
+double physics_weber_periodtime(const celestial_body_t body, cd mass_center_kg)
+{
+    double A = 2.0 * physics_pi() * sqrt(pow(body->a_m, 3.0) / (PHYSICS_G * mass_center_kg));
+    double B = 3.0 * PHYSICS_G * mass_center_kg / (2.0 * PHYSICS_C_SQUARE * body->a_m * (1.0 - body->e_square));
+    return A * (1.0 + B);
+}
+
+double physics_weber_deltaphi(const celestial_body_t body, cd mass_center_kg, cd T_step_s)
+{
+    double A = vector_norm(&body->w_rad_s) * T_step_s;
+    double h = _physics_weber_specific_angular_momentum(body, mass_center_kg);
+    double r = vector_norm(&body->r_m);
+    double B = 3.0 * PHYSICS_G * mass_center_kg * h * T_step_s / (PHYSICS_C_SQUARE * pow(r, 3.0));
+    return A + B;
+}
+
+struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cd mass_center_kg, cd phi_rad)
+{
+    struct vector_3d w = {0};
+    double h = _physics_weber_specific_angular_momentum(body, mass_center_kg);
+    struct vector_3d r = physics_weber_position(body, mass_center_kg, phi_rad);
+    w.z = h / vector_dot(&r, &r);
+    return w;
+}
+
+struct vector_3d physics_weber_angular_speed_perturbed(const celestial_body_t body, const celestial_body_t body_i, cd mass_center_kg)
+{
+    struct vector_3d dr = physics_weber_position_perturbed(body, body_i, mass_center_kg);
+    struct vector_3d dv = physics_weber_velocity_perturbed(body, body_i, mass_center_kg);
+    struct vector_3d A = vector_cross(&body->r_m, &dv);
+    struct vector_3d B = vector_cross(&dr, &body->v_m_s);
+    struct vector_3d w = vector_add(&A, &B);
+    return vector_divide_scalar(&w, vector_dot(&body->r_m, &body->r_m));
+}
+
+struct vector_3d physics_weber_position_perturbed(const celestial_body_t body, const celestial_body_t body_i, cd mass_center_kg)
+{
+    struct vector_3d r = vector_sub(&body->r_m, &body_i->r_m);
+    double A = body_i->mass_kg / mass_center_kg * pow(body_i->a_m, 2.0) / vector_dot(&r, &r);
+    return vector_multiply_scalar(&r, A);
 }
 
 struct vector_3d physics_weber_velocity_perturbed(const celestial_body_t body, const celestial_body_t body_i, cd mass_center_kg)
@@ -194,7 +195,7 @@ struct vector_3d physics_weber_velocity_perturbed(const celestial_body_t body, c
     };
     vr = vector_cross(&vr, &z);
     double r = vector_norm(&vr);
-    double h = physics_weber_specific_angular_momentum(body, mass_center_kg);
+    double h = _physics_weber_specific_angular_momentum(body, mass_center_kg);
     double A = PHYSICS_G * body_i->mass_kg / (h * pow(r, 3.0));
     return vector_multiply_scalar(&vr, A);
 }
