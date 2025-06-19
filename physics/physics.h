@@ -107,6 +107,17 @@
 #define PHYSICS_URANUS_W 98.99933405
 #define PHYSICS_NEPTUNE_W 276.33621852
 
+// Mittlere Anomalie M0 zur Epoche J2000.0 (in Radiant)
+// Quelle: IMCCE VSOP87 (https://www.imcce.fr/content/medias/recherche/equipes/asd/vsop87/vsop87.html)
+#define PHYSICS_MERCURY_M0   3.050          // VSOP87: 174.793° (Merkur)
+#define PHYSICS_VENUS_M0     0.880          // VSOP87: 50.416°  (Venus)
+#define PHYSICS_EARTH_M0     6.240          // VSOP87: 357.517° (Erde)
+#define PHYSICS_MARS_M0      0.338          // VSOP87: 19.373°  (Mars)
+#define PHYSICS_JUPITER_M0   4.598          // VSOP87: 263.451° (Jupiter)
+#define PHYSICS_SATURN_M0    2.559          // VSOP87: 146.636° (Saturn)
+#define PHYSICS_URANUS_M0    4.482          // VSOP87: 256.828° (Uranus)
+#define PHYSICS_NEPTUNE_M0   3.196          // VSOP87: 183.120° (Neptun)
+
 typedef struct celestial_body
 {
     struct vector_3d r_m;
