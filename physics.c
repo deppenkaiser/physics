@@ -153,6 +153,6 @@ struct vector_3d physics_weber_angular_speed_perturbed(const celestial_body_t bo
     struct vector_3d R = vector_sub(&body_i->r_m, &body->r_m);
     struct vector_3d V = vector_sub(&body_i->v_m_s, &body->v_m_s);
     struct vector_3d w = vector_cross(&body->r_m, &R);
-    double A = PHYSICS_G * body_i->mass_kg / (pow(vector_norm(&R), 3.0) * pow(vector_norm(&body->v_m_s), 2.0));
+    double A = PHYSICS_G * body_i->mass_kg / (pow(vector_norm(&R), 3.0) * pow(vector_norm(&body->r_m), 2.0));
     return vector_multiply_scalar(&w, A * (1.0 - pow(vector_norm(&V), 2.0) / PHYSICS_C_SQUARE));
 }
