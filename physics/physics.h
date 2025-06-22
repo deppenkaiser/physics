@@ -130,6 +130,7 @@ typedef struct celestial_body
     double e_square;
     double a_m;
     double T_s;
+    double perihel_m;
     const char* name;
     uint32_t index;
 } *celestial_body_t;
