@@ -89,12 +89,20 @@ ld physics_weber_specific_angular_momentum(const celestial_body_t body, cld mass
     return sqrtl(PHYSICS_G * mass_center_kg * body->a_m * (1.0L - body->e_square));
 }
 
+ld _physics_weber_alpha(const celestial_body_t body, cld mass_center_kg)
+{
+    cld h = physics_weber_specific_angular_momentum(body, mass_center_kg);
+    return 3.0L * powl(PHYSICS_G, 2.0L) * powl(mass_center_kg, 2.0L) * body->e / (8.0L * powl(h, 4.0L));
+}
+
 ld _physics_weber_k(const celestial_body_t body, cld mass_center_kg)
 {
     cld A = 6.0 * PHYSICS_G * mass_center_kg;
     cld B = PHYSICS_C_SQUARE * body->a_m * (1.0 - body->e_square);
-    cld C = sqrt(1.0 - A / B);
-    return C;
+    cld C = 27.0L * powl(PHYSICS_G, 2.0L) * powl(mass_center_kg, 2.0L);
+    cld D = 2.0L * powl(PHYSICS_C, 4.0L) * powl(body->a_m, 2.0L) * powl(1.0 - body->e_square, 2.0L);
+    cld E = sqrt(1.0 - A / B + C / D);
+    return E;
 }
 
 struct vector_3d physics_weber_position(const celestial_body_t body, cld mass_center_kg, cld phi_rad)
@@ -108,11 +116,20 @@ struct vector_3d physics_weber_position(const celestial_body_t body, cld mass_ce
 
     cld h = physics_weber_specific_angular_momentum(body, mass_center_kg);
     cld K = _physics_weber_k(body, mass_center_kg);
-    cld A = body->a_m * (1.0L - body->e_square) / (1.0L + body->e * cosl(K * phi_rad));
-    cld B = 3.0L * powl(PHYSICS_G, 2.0) * powl(mass_center_kg, 2.0L) / (PHYSICS_C_SQUARE * powl(h, 4.0L));
-    cld C = A * (1.0L + B * (1.0L + body->e_square / 2.0L + body->e * phi_rad * sinl(K * phi_rad)));
-    
-    return vector_multiply_scalar(&position, C);
+    cld A = _physics_weber_alpha(body, mass_center_kg);
+    cld B = body->a_m * (1.0L - body->e_square) / (1.0L + body->e * cosl(K * phi_rad + A * powl(phi_rad, 2.0L) / powl(PHYSICS_C, 4.0L)));
+    return vector_multiply_scalar(&position, B);
+}
+
+struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cld mass_center_kg, cld phi_rad)
+{
+    struct vector_3d w = {0};
+    cld h = physics_weber_specific_angular_momentum(body, mass_center_kg);
+    cld K = _physics_weber_k(body, mass_center_kg);
+    cld A = _physics_weber_alpha(body, mass_center_kg);
+    cld B = h * powl(1.0L + body->e * cosl(K * phi_rad + A * powl(phi_rad, 2.0L)), 2.0L);
+    w.z = B / (powl(body->a_m, 2.0L) * powl(1.0L - body->e_square, 2.0L));
+    return w;
 }
 
 ld physics_weber_periodtime(const celestial_body_t body, cld mass_center_kg)
@@ -129,13 +146,4 @@ ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld T
     cld r = vector_norm(&body->r_m);
     cld B = 3.0L * PHYSICS_G * mass_center_kg * h * T_step_s / (PHYSICS_C_SQUARE * powl(r, 3.0L));
     return A + B;
-}
-
-struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cld mass_center_kg, cld phi_rad)
-{
-    struct vector_3d w = {0};
-    cld h = physics_weber_specific_angular_momentum(body, mass_center_kg);
-    struct vector_3d r = physics_weber_position(body, mass_center_kg, phi_rad);
-    w.z = h / vector_dot(&r, &r);
-    return w;
 }
