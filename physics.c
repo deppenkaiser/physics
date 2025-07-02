@@ -134,9 +134,11 @@ struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cld ma
 
 ld physics_weber_periodtime(const celestial_body_t body, cld mass_center_kg)
 {
-    cld A = 2.0L * physics_pi() * sqrtl(powl(body->a_m, 3.0L) / (PHYSICS_G * mass_center_kg));
+    cld A = 2.0L * physics_pi() * powl(body->a_m, 3.0L / 2.0L) / (sqrtl(PHYSICS_G * mass_center_kg));
     cld B = 3.0L * PHYSICS_G * mass_center_kg / (2.0L * PHYSICS_C_SQUARE * body->a_m * (1.0L - body->e_square));
-    return A * (1.0L + B);
+    cld C = 45.0L * powl(PHYSICS_G, 2.0L) * powl(mass_center_kg, 2.0L) /
+        (8.0L * powl(PHYSICS_C, 4.0L) * powl(body->a_m, 2.0L) * powl(1.0L - body->e_square, 2.0L));
+    return A * (1.0L + B + C * (1.0L - body->e_square / 3.0L));
 }
 
 ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld T_step_s)
