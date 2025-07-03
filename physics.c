@@ -2,6 +2,7 @@
 
 #include <logging/logging.h>
 #include <string/string.h>
+#include <gsl/gsl_integration.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -141,11 +142,26 @@ ld physics_weber_periodtime(const celestial_body_t body, cld mass_center_kg)
     return A * (1.0L + B + C * (1.0L - body->e_square / 3.0L));
 }
 
-ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld T_step_s)
+double f(double x, void *params)
 {
-    cld A = vector_norm(&body->w_rad_s) * T_step_s;
-    cld h = physics_weber_specific_angular_momentum(body, mass_center_kg);
-    cld r = vector_norm(&body->r_m);
-    cld B = 3.0L * PHYSICS_G * mass_center_kg * h * T_step_s / (PHYSICS_C_SQUARE * powl(r, 3.0L));
-    return A + B;
+    return exp(-x * x);
+}
+
+ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t_0_s, cld t_1_s)
+{
+    gsl_integration_workspace *workspace = gsl_integration_workspace_alloc(1000);
+
+    double result = 0.0, error = 0.0;
+    double a = 0.0, b = 2.0 * physics_pi();  // Integrationsintervall [a, b]
+    double epsabs = 1e-7, epsrel = 1e-7;  // Toleranzen
+
+    gsl_function F;
+    F.function = f;
+    F.params = NULL;
+
+    // Integration mit QAGS (für singuläre oder komplexe Integranden)
+    gsl_integration_qags(&F, a, b, epsabs, epsrel, 1000, workspace, &result, &error);
+    gsl_integration_workspace_free(workspace);
+
+    return result;
 }
