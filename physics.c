@@ -2,7 +2,8 @@
 
 #include <logging/logging.h>
 #include <string/string.h>
-#include <gsl/gsl_integration.h>
+#include <gsl/gsl_odeiv2.h>
+#include <gsl/gsl_errno.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -142,26 +143,33 @@ ld physics_weber_periodtime(const celestial_body_t body, cld mass_center_kg)
     return A * (1.0L + B + C * (1.0L - body->e_square / 3.0L));
 }
 
-double f(double x, void *params)
+typedef struct rk4_params
 {
-    return exp(-x * x);
+    celestial_body_t body;
+    cld mass_center_kg;
+} *rk4_params_t;
+
+int func(double t, const double phi[], double dphidt[], void *p)
+{
+    rk4_params_t params = (rk4_params_t) p;
+    dphidt[0] = physics_weber_angular_speed(params->body, params->mass_center_kg, phi[0]).z;
+    return GSL_SUCCESS;
 }
 
-ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t_0_s, cld t_1_s)
+ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t_0_s, cld t_1_s, cld phi_0_rad)
 {
-    gsl_integration_workspace *workspace = gsl_integration_workspace_alloc(1000);
+    struct rk4_params p = (struct rk4_params)
+    {
+        .body = body,
+        .mass_center_kg = mass_center_kg
+    };
 
-    double result = 0.0, error = 0.0;
-    double a = 0.0, b = 2.0 * physics_pi();  // Integrationsintervall [a, b]
-    double epsabs = 1e-7, epsrel = 1e-7;  // Toleranzen
+    gsl_odeiv2_system sys = {func, NULL, 1, &p}; // 1D-System (phi)
+    gsl_odeiv2_driver *driver = gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rk4, 1e-6, 1e-6, 0.0); // RK4 mit tolerierbarem Fehler
+    double phi = phi_0_rad; // Startwinkel (z. B. Perihel bei phi=0)
+    double t = t_0_s, t_end = t_1_s; // Integrationszeitraum
+    gsl_odeiv2_driver_apply(driver, &t, t_end, &phi);
+    gsl_odeiv2_driver_free(driver);
 
-    gsl_function F;
-    F.function = f;
-    F.params = NULL;
-
-    // Integration mit QAGS (für singuläre oder komplexe Integranden)
-    gsl_integration_qags(&F, a, b, epsabs, epsrel, 1000, workspace, &result, &error);
-    gsl_integration_workspace_free(workspace);
-
-    return result;
+    return phi - phi_0_rad;
 }
