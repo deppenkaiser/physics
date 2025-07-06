@@ -165,7 +165,7 @@ ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t
     };
 
     gsl_odeiv2_system sys = {func, NULL, 1, &p}; // 1D-System (phi)
-    gsl_odeiv2_driver *driver = gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rk4, 1e-6, 1e-6, 0.0); // RK4 mit tolerierbarem Fehler
+    gsl_odeiv2_driver *driver = gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rk4, 1e-12, 1e-12, 1e-12); // RK4 mit tolerierbarem Fehler
     double phi = phi_0_rad; // Startwinkel (z. B. Perihel bei phi=0)
     double t = t_0_s, t_end = t_1_s; // Integrationszeitraum
     gsl_odeiv2_driver_apply(driver, &t, t_end, &phi);
