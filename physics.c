@@ -94,7 +94,7 @@ ld physics_weber_alpha(const celestial_body_t body, cld mass_center_kg)
     return 3.0L * powl(PHYSICS_G, 2.0L) * powl(mass_center_kg, 2.0L) * body->e / (8.0L * powl(body->h, 4.0L));
 }
 
-ld physics_weber_k(const celestial_body_t body, cld mass_center_kg)
+ld physics_weber_k_2nd_order(const celestial_body_t body, cld mass_center_kg)
 {
     cld A = 6.0 * PHYSICS_G * mass_center_kg;
     cld B = PHYSICS_C_SQUARE * body->a_m * (1.0 - body->e_square);
@@ -138,4 +138,9 @@ ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t
 {
     cld phi = physics_weber_angular_speed(body, mass_center_kg, phi_0_rad).z * t_step_s;
     return phi;
+}
+
+ld physics_deltaphi_per_revolution(const celestial_body_t body, cld mass_center_kg)
+{
+    return 2.0L * physics_pi() * (1.0L / body->K - 1.0L);
 }
