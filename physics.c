@@ -91,7 +91,7 @@ ld physics_weber_h(const celestial_body_t body, cld mass_center_kg)
 
 ld physics_weber_alpha(const celestial_body_t body, cld mass_center_kg)
 {
-    return 3.0L * powl(PHYSICS_G, 2.0L) * powl(mass_center_kg, 2.0L) * body->e / (8.0L * powl(body->h, 4.0L));
+    return 3.0L * powl(PHYSICS_G, 2.0L) * powl(mass_center_kg, 2.0L) * body->e / (8.0L * powl(body->h, 4.0L) * powl(PHYSICS_C, 4.0L));
 }
 
 ld physics_weber_k_1st_order(const celestial_body_t body, cld mass_center_kg)
@@ -121,7 +121,7 @@ struct vector_3d physics_weber_position(const celestial_body_t body, cld mass_ce
         .z = 0.0
     };
 
-    cld B = body->a_m * (1.0L - body->e_square) / (1.0L + body->e * cosl(body->K_2 * phi_rad + body->A * powl(phi_rad, 2.0L) / powl(PHYSICS_C, 4.0L)));
+    cld B = body->a_m * (1.0L - body->e_square) / (1.0L + body->e * cosl(body->K_2 * phi_rad + body->A * powl(phi_rad, 2.0L)));
     return vector_multiply_scalar(&position, B);
 }
 
@@ -155,5 +155,5 @@ ld physics_deltaphi_per_revolution_1(const celestial_body_t body, cld mass_cente
 
 ld physics_deltaphi_per_revolution_2(const celestial_body_t body, cld mass_center_kg)
 {
-    return 2.0L * physics_pi() * (1.0L / body->K_2 - 1.0L);
+    return 2.0L * physics_pi() * (1.0L / body->K_2 - 1.0L) - 4.0L * powl(physics_pi(), 2.0L) * body->A / powl(body->K_2, 3.0L);
 }
