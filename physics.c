@@ -134,33 +134,8 @@ ld physics_weber_periodtime(const celestial_body_t body, cld mass_center_kg)
     return A * (1.0L + B + C * (1.0L - body->e_square / 3.0L));
 }
 
-typedef struct rk4_params
+ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t_step_s, cld phi_0_rad)
 {
-    celestial_body_t body;
-    cld mass_center_kg;
-} *rk4_params_t;
-
-int func(double t, const double phi[], double dphidt[], void *p)
-{
-    rk4_params_t params = (rk4_params_t) p;
-    dphidt[0] = physics_weber_angular_speed(params->body, params->mass_center_kg, phi[0]).z;
-    return GSL_SUCCESS;
-}
-
-ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t_0_s, cld t_1_s, cld phi_0_rad)
-{
-    struct rk4_params p = (struct rk4_params)
-    {
-        .body = body,
-        .mass_center_kg = mass_center_kg
-    };
-
-    gsl_odeiv2_system sys = {func, NULL, 1, &p}; // 1D-System (phi)
-    gsl_odeiv2_driver *driver = gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rk4, 1e-12, 1e-12, 1e-12); // RK4 mit tolerierbarem Fehler
-    double phi = phi_0_rad; // Startwinkel (z. B. Perihel bei phi=0)
-    double t = t_0_s, t_end = t_1_s; // Integrationszeitraum
-    gsl_odeiv2_driver_apply(driver, &t, t_end, &phi);
-    gsl_odeiv2_driver_free(driver);
-
-    return phi - phi_0_rad;
+    cld phi = physics_weber_angular_speed(body, mass_center_kg, phi_0_rad).z * t_step_s;
+    return phi;
 }

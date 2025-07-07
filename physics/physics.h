@@ -157,6 +157,6 @@ ld physics_weber_h(const celestial_body_t body, cld mass_center_kg);
 ld physics_weber_alpha(const celestial_body_t body, cld mass_center_kg);
 ld physics_weber_k(const celestial_body_t body, cld mass_center_kg);
 ld physics_weber_periodtime(const celestial_body_t body, cld mass_center_kg);
-ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t_0_s, cld t_1_s, cld phi_0_rad);
+ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t_step_s, cld phi_0_rad);
 struct vector_3d physics_weber_position(const celestial_body_t body, cld mass_center_kg, cld phi_rad);
 struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cld mass_center_kg, cld phi_rad);
