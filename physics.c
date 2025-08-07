@@ -38,9 +38,15 @@ ld physics_rad_to_deg(cld angle_rad)
     return angle_rad * 180.0 / physics_pi();
 }
 
-ld physics_seconds_per_day()
+ld physics_seconds_per_year()
 {
-    return 24.0L * 3600.0L;
+    struct celestial_body body = (struct celestial_body)
+    {
+        .a_m = PHYSICS_EARTH_A * PHYSICS_AU,
+        .e_square = PHYSICS_EARTH_ECCENTRICITY * PHYSICS_EARTH_ECCENTRICITY
+    };
+
+    return physics_weber_periodtime(&body, PHYSICS_SUN_MASS);
 }
 
 ld physics_barycenter_AU(cld distance_AU, cld mass_center_kg, cld mass_satellite_kg)
