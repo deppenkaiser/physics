@@ -78,12 +78,6 @@ ld physics_kinetic_energy_body(const celestial_body_t body)
     return physics_kinetic_energy(body->mass_kg, &body->v_m_s);
 }
 
-ld physics_weber_potential_energy(const celestial_body_t body, cld mass_center_kg, cld phi_rad)
-{
-    cld v_radial = body->h * body->e * body->K_2 * sin(body->K_2 * phi_rad) / (1.0 - body->e_square);
-    return -PHYSICS_G * mass_center_kg * body->mass_kg / vector_norm(&body->r_m) * (1.0L - powl(v_radial, 2.0L) / (2.0L * PHYSICS_C_SQUARE));
-}
-
 ld physics_weber_h(const celestial_body_t body, cld mass_center_kg)
 {
     return sqrtl(PHYSICS_G * mass_center_kg * body->a_m * (1.0L - body->e_square));
@@ -94,22 +88,12 @@ ld physics_weber_alpha(const celestial_body_t body, cld mass_center_kg)
     return 3.0L * powl(PHYSICS_G, 2.0L) * powl(mass_center_kg, 2.0L) * body->e / (8.0L * powl(body->h, 4.0L) * powl(PHYSICS_C, 4.0L));
 }
 
-ld physics_weber_k_1st_order(const celestial_body_t body, cld mass_center_kg)
+ld physics_weber_k(const celestial_body_t body, cld mass_center_kg)
 {
     cld A = 6.0 * PHYSICS_G * mass_center_kg;
     cld B = PHYSICS_C_SQUARE * body->a_m * (1.0 - body->e_square);
     cld C = sqrt(1.0 - A / B);
     return C;
-}
-
-ld physics_weber_k_2nd_order(const celestial_body_t body, cld mass_center_kg)
-{
-    cld A = 6.0 * PHYSICS_G * mass_center_kg;
-    cld B = PHYSICS_C_SQUARE * body->a_m * (1.0 - body->e_square);
-    cld C = 27.0L * powl(PHYSICS_G, 2.0L) * powl(mass_center_kg, 2.0L);
-    cld D = 2.0L * powl(PHYSICS_C, 4.0L) * powl(body->a_m, 2.0L) * powl(1.0 - body->e_square, 2.0L);
-    cld E = sqrt(1.0 - A / B + C / D);
-    return E;
 }
 
 struct vector_3d physics_weber_position(const celestial_body_t body, cld mass_center_kg, cld phi_rad)
@@ -121,25 +105,16 @@ struct vector_3d physics_weber_position(const celestial_body_t body, cld mass_ce
         .z = 0.0
     };
 
-    cld B = body->a_m * (1.0L - body->e_square) / (1.0L + body->e * cosl(body->K_2 * phi_rad + body->A * powl(phi_rad, 2.0L)));
+    cld B = body->a_m * (1.0L - body->e_square) / (1.0L + body->e * cosl(body->K * phi_rad));
     return vector_multiply_scalar(&position, B);
 }
 
 struct vector_3d physics_weber_angular_speed(const celestial_body_t body, cld mass_center_kg, cld phi_rad)
 {
     struct vector_3d w = {0};
-    cld B = body->h * powl(1.0L + body->e * cosl(body->K_2 * phi_rad + body->A * powl(phi_rad, 2.0L)), 2.0L);
+    cld B = body->h * powl(1.0L + body->e * cosl(body->K * phi_rad), 2.0L);
     w.z = B / (powl(body->a_m, 2.0L) * powl(1.0L - body->e_square, 2.0L));
     return w;
-}
-
-ld physics_weber_periodtime(const celestial_body_t body, cld mass_center_kg)
-{
-    cld A = 2.0L * physics_pi() * powl(body->a_m, 3.0L / 2.0L) / (sqrtl(PHYSICS_G * mass_center_kg));
-    cld B = 3.0L * PHYSICS_G * mass_center_kg / (2.0L * PHYSICS_C_SQUARE * body->a_m * (1.0L - body->e_square));
-    cld C = 45.0L * powl(PHYSICS_G, 2.0L) * powl(mass_center_kg, 2.0L) /
-        (8.0L * powl(PHYSICS_C, 4.0L) * powl(body->a_m, 2.0L) * powl(1.0L - body->e_square, 2.0L));
-    return A * (1.0L + B + C * (1.0L - body->e_square / 3.0L));
 }
 
 ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t_step_s, cld phi_0_rad)
@@ -148,12 +123,15 @@ ld physics_weber_deltaphi(const celestial_body_t body, cld mass_center_kg, cld t
     return phi;
 }
 
-ld physics_deltaphi_per_revolution_1(const celestial_body_t body, cld mass_center_kg)
+ld physics_deltaphi_per_revolution(const celestial_body_t body, cld mass_center_kg)
 {
-    return 2.0L * physics_pi() * (1.0L / body->K_1 - 1.0L);
+    return 2.0L * physics_pi() * (1.0L / body->K - 1.0L);
 }
 
-ld physics_deltaphi_per_revolution_2(const celestial_body_t body, cld mass_center_kg)
+ld physics_weber_periodtime(const celestial_body_t body, cld mass_center_kg)
 {
-    return 2.0L * physics_pi() * (1.0L / body->K_2 - 1.0L) - 4.0L * powl(physics_pi(), 2.0L) * body->A / powl(body->K_2, 3.0L);
+    cld GM = PHYSICS_G * mass_center_kg;
+    cld A = 2.0L * physics_pi() * sqrtl(powl(body->a_m, 3.0L) / GM);
+    cld B = 3.0L * GM / (4.0L * PHYSICS_C_SQUARE * body->a_m * (1.0L - body->e_square));
+    return A * (1.0L - B);
 }
