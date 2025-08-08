@@ -4,6 +4,7 @@
 #include <string/string.h>
 #include <gsl/gsl_odeiv2.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -140,4 +141,40 @@ ld physics_weber_periodtime(const celestial_body_t body, cld mass_center_kg)
     cld A = 2.0L * physics_pi() * sqrtl(powl(body->a_m, 3.0L) / GM);
     cld B = 3.0L * GM / (4.0L * PHYSICS_C_SQUARE * body->a_m * (1.0L - body->e_square));
     return A * (1.0L - B);
+}
+
+typedef struct _physics_ode_params
+{
+    ld h;
+    celestial_body_t body;
+} *physics_ode_params_t;
+
+int _physics_delta_phi_ode(double t, const double phi[], double dphi_dt[], void *data)
+{
+    physics_ode_params_t params = (physics_ode_params_t) data;
+    struct vector_3d r = physics_weber_position(params->body, PHYSICS_SUN_MASS, phi[0]);
+    cld _r = vector_norm(&r);
+    dphi_dt[0] = params->h / (_r * _r);
+    return GSL_SUCCESS;
+}
+
+ld physics_weber_delta_phi_ode(const celestial_body_t body, ld phi_0_rad, ld T_0_s, ld T_step_s)
+{
+    struct _physics_ode_params params = (struct _physics_ode_params)
+    {
+        .h = physics_weber_h(body, PHYSICS_SUN_MASS),
+        .body = body
+    };
+
+    // GSL-ODE-Löser initialisieren
+    gsl_odeiv2_system sys = {_physics_delta_phi_ode, NULL, 1, &params};
+    gsl_odeiv2_driver *driver = gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rkf45, 1e-6, 1e-6, 0.0);
+
+    // Numerische Integration
+    double phi = phi_0_rad;  // Startwert
+    double t = T_0_s;
+    gsl_odeiv2_driver_apply(driver, &t, T_step_s, &phi);
+
+    gsl_odeiv2_driver_free(driver);
+    return phi - phi_0_rad;
 }
