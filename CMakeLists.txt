@@ -30,6 +30,7 @@ target_link_libraries(physics
 		vector
 	PRIVATE
 		${GSL_LIBRARIES}
+		m
 )
 
 target_include_directories(physics PRIVATE
