@@ -11,9 +11,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_library(physics STATIC)
-add_subdirectory(../string ${CMAKE_BINARY_DIR}/string_from_physics)
-add_subdirectory(../logging ${CMAKE_BINARY_DIR}/logging_from_physics)
-add_subdirectory(../vector ${CMAKE_BINARY_DIR}/vector_from_physics)
+add_subdirectory(../string ${CMAKE_BINARY_DIR}/libs_build/string_from_physics)
+add_subdirectory(../logging ${CMAKE_BINARY_DIR}/libs_build/logging_from_physics)
+add_subdirectory(../vector ${CMAKE_BINARY_DIR}/libs_build/vector_from_physics)
 
 target_sources(physics PRIVATE
 	physics.c
