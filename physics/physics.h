@@ -109,14 +109,17 @@
 
 // Mittlere Anomalie M0 zur Epoche J2000.0 (in Radiant)
 // Quelle: IMCCE VSOP87 (https://www.imcce.fr/content/medias/recherche/equipes/asd/vsop87/vsop87.html)
+// Die vier AEUSSEREN Planeten stammen aus den J2000-Mittelbahnen (JPL / Explanatory Supplement,
+// Tab. 5.8.1): die frueheren Werte waren um 77 bis 244 Grad falsch — die Planeten standen damit
+// sichtbar an der falschen Stelle. M0 = mittlere Laenge L - Perihellänge.
 #define PHYSICS_MERCURY_M0   3.050L          // VSOP87: 174.793° (Merkur)
 #define PHYSICS_VENUS_M0     0.880L          // VSOP87: 50.416°  (Venus)
 #define PHYSICS_EARTH_M0     6.240L          // VSOP87: 357.517° (Erde)
 #define PHYSICS_MARS_M0      0.338L          // VSOP87: 19.373°  (Mars)
-#define PHYSICS_JUPITER_M0   4.598L          // VSOP87: 263.451° (Jupiter)
-#define PHYSICS_SATURN_M0    2.559L          // VSOP87: 146.636° (Saturn)
-#define PHYSICS_URANUS_M0    4.482L          // VSOP87: 256.828° (Uranus)
-#define PHYSICS_NEPTUNE_M0   3.196L          // VSOP87: 183.120° (Neptun)
+#define PHYSICS_JUPITER_M0   0.350342962L    // 20.07317° (J2000: mittlere Laenge 34.40438° - Perihellänge 14.33121°)
+#define PHYSICS_SATURN_M0   5.530722947L    // 316.88708° (J2000: mittlere Laenge 49.94432° - Perihellänge 93.05724°)
+#define PHYSICS_URANUS_M0   2.447420912L    // 140.22689° (J2000: mittlere Laenge 313.23218° - Perihellänge 173.00529°)
+#define PHYSICS_NEPTUNE_M0   4.481303102L    // 256.75975° (J2000: mittlere Laenge 304.88003° - Perihellänge 48.12028°)
 
 typedef struct celestial_body
 {
